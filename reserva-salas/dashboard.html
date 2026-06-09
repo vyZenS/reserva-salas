@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Panel de control para gestionar reservas de salas en la Universidad de Talca">
     <title>Dashboard - Reservas</title>
+    
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
 </head>
@@ -19,7 +21,7 @@
             <nav class="sidebar-nav">
                 <h3>Salas Disponibles</h3>
                 <ul id="lista-salas-sidebar">
-                </ul>
+                    </ul>
             </nav>
 
             <div class="sidebar-footer">
@@ -40,7 +42,7 @@
 
                 <div class="theme-switcher">
                     <i class="fa-solid fa-sun"></i>
-                    <label class="switch">
+                    <label class="switch" aria-label="Cambiar tema claro/oscuro">
                         <input type="checkbox" id="theme-toggle">
                         <span class="slider round"></span>
                     </label>
@@ -52,51 +54,102 @@
         <main class="main-content">
             <header class="calendar-nav">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <button><i class="fa-solid fa-chevron-left"></i></button>
-                    <h2 style="min-width: 200px; text-align: center;">Junio 2026</h2>
-                    <button><i class="fa-solid fa-chevron-right"></i></button>
+                    <button id="btn-anterior" aria-label="Mes anterior"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 id="mes-actual" style="min-width: 200px; text-align: center;">Junio 2026</h2>
+                    <button id="btn-siguiente" aria-label="Mes siguiente"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <div class="view-selector">
-                    <button style="padding: 5px 10px; border-radius: 5px; border: none; background-color: var(--primary-color); color: white;">Mes</button>
+
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="view-selector" style="display: flex; gap: 5px;">
+                        <button id="vista-mes" class="btn-vista active">Mes</button>
+                        <button id="vista-semana" class="btn-vista">Semana</button>
+                        <button id="vista-dia" class="btn-vista">Día</button>
+                    </div>
                 </div>
             </header>
 
-            <div class="calendar-weekdays">
-                <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+            <div id="contenedor-vista-mes" class="sub-vista">
+                <div class="calendar-weekdays">
+                    <div>Lun</div>
+                    <div>Mar</div>
+                    <div>Mié</div>
+                    <div>Jue</div>
+                    <div>Vie</div>
+                    <div>Sáb</div>
+                    <div>Dom</div>
+                </div>
+                <div class="calendar-grid" id="calendario-grid">
+                    </div>
             </div>
-            
-            <div class="calendar-grid" id="calendario-grid">
+
+            <div id="contenedor-vista-semana" class="sub-vista" style="display: none;">
+                <div class="calendar-week-view" style="overflow-x: auto;">
+                    <table class="history-table" style="width: 100%; border-collapse: collapse; min-width: 800px; table-layout: fixed;">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Hora</th>
+                                <th>Lun 01</th>
+                                <th>Mar 02</th>
+                                <th>Mié 03</th>
+                                <th>Jue 04</th>
+                                <th>Vie 05</th>
+                                <th>Sáb 06</th>
+                                <th>Dom 07</th>
+                            </tr>
+                        </thead>
+                        <tbody id="grid-semana-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="contenedor-vista-dia" class="sub-vista" style="display: none;">
+                <div class="calendar-day-view" style="overflow-x: auto;">
+                    <table class="history-table" style="width: 100%; border-collapse: collapse; min-width: 600px; table-layout: fixed;">
+                        <thead>
+                            <tr id="cabecera-salas-dia">
+                                <th style="width: 80px;">Hora</th>
+                                </tr>
+                        </thead>
+                        <tbody id="grid-dia-body">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </main>
 
-        <!-- MODAL DE RESERVA (Oculto por defecto) -->
         <div id="modal-reserva" class="modal-overlay" style="display: none;">
             <div class="modal-content">
                 <h3 style="margin-bottom: 15px;">Nueva Reserva</h3>
                 <form id="form-reserva">
+                    
                     <div class="form-group">
                         <label for="fecha-reserva">Fecha Seleccionada</label>
                         <input type="text" id="fecha-reserva" readonly>
                     </div>
+                    
                     <div class="form-group">
                         <label for="sala-select">Sala</label>
                         <select id="sala-select" required>
-                        </select>
+                            </select>
                     </div>
+                    
                     <div style="display: flex; gap: 10px;">
                         <div class="form-group" style="width: 50%;">
                             <label for="hora-inicio">Inicio</label>
-                            <input type="time" id="hora-inicio" value="09:00" required>
+                            <input type="time" id="hora-inicio" min="09:00" max="20:00" step="1800" required>
                         </div>
                         <div class="form-group" style="width: 50%;">
                             <label for="hora-fin">Fin</label>
-                            <input type="time" id="hora-fin" value="10:00" required>
+                            <input type="time" id="hora-fin" min="09:00" max="20:00" step="1800" required>
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label for="motivo">Motivo</label>
                         <input type="text" id="motivo" placeholder="Ej: Estudio grupal" required>
                     </div>
+                    
                     <div class="modal-actions">
                         <button type="button" id="cancel-btn">Cancelar</button>
                         <button type="submit" id="save-btn">Guardar</button>
@@ -105,12 +158,12 @@
             </div>
         </div>
 
-        <!-- NOTIFICACIÓN (Toast) -->
         <div id="notification-toast" class="toast">
             <p id="notification-text"></p>
         </div>
 
     </div>
+    
     <script src="js/reservas.js"></script>
 </body>
 </html>
