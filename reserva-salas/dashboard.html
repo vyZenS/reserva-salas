@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Panel de control para gestionar reservas de salas en la Universidad de Talca">
     <title>Dashboard - Reservas</title>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
 </head>
@@ -52,8 +52,8 @@
         </aside>
 
         <main class="main-content">
-            <header class="calendar-nav">
-                <div style="display: flex; align-items: center; gap: 10px;">
+            <header class="calendar-nav" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
                     <button id="btn-anterior" aria-label="Mes anterior"><i class="fa-solid fa-chevron-left"></i></button>
                     <h2 id="mes-actual" style="min-width: 200px; text-align: center;">Junio 2026</h2>
                     <button id="btn-siguiente" aria-label="Mes siguiente"><i class="fa-solid fa-chevron-right"></i></button>
@@ -86,7 +86,7 @@
                 <div class="calendar-week-view" style="overflow-x: auto;">
                     <table class="history-table" style="width: 100%; border-collapse: collapse; min-width: 800px; table-layout: fixed;">
                         <thead>
-                            <tr>
+                            <tr id="cabecera-semana">
                                 <th style="width: 80px;">Hora</th>
                                 <th>Lun 01</th>
                                 <th>Mar 02</th>
@@ -137,11 +137,11 @@
                     <div style="display: flex; gap: 10px;">
                         <div class="form-group" style="width: 50%;">
                             <label for="hora-inicio">Inicio</label>
-                            <input type="time" id="hora-inicio" min="09:00" max="20:00" step="1800" required>
+                            <input type="time" id="hora-inicio" min="07:00" max="23:00" step="1800" required>
                         </div>
                         <div class="form-group" style="width: 50%;">
                             <label for="hora-fin">Fin</label>
-                            <input type="time" id="hora-fin" min="09:00" max="20:00" step="1800" required>
+                            <input type="time" id="hora-fin" min="07:00" max="23:00" step="1800" required>
                         </div>
                     </div>
                     

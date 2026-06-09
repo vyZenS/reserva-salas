@@ -33,11 +33,25 @@ loginForm.addEventListener('submit', function(e) {
         return;
     }
 
-    const usuarioSimulado = {
-        nombre: email.split('@')[0],
-        rol: email.includes('admin') ? 'admin' : 'usuario'
-    };
+    const usuariosRegistrados = JSON.parse(localStorage.getItem('usuarios')) || [];
+    const usuarioEncontrado = usuariosRegistrados.find(u => u.email === email && u.password === password);
 
+    let usuarioSimulado;
+
+    if (usuarioEncontrado) {
+        if (usuarioEncontrado.password !== password || usuarioEncontrado.email !== email) {
+            errorMessage.textContent = 'Correo o contraseña incorrectos. Por favor, intenta de nuevo.';
+            return;
+        }
+
+        // Si el usuario es encontrado y las credenciales son correctas, se simula un inicio de sesión exitoso
+        usuarioSimulado = usuarioEncontrado;
+        console.log("Login exitoso:", usuarioSimulado);
+    } else {
+        // Si no se encuentra el usuario, se crea un usuario simulado para pruebas
+        errorMessage.textContent = 'Correo o contraseña incorrectos. Por favor, intenta de nuevo.';
+        return;
+    }
 
     console.log("Login exitoso:", usuarioSimulado);
 
