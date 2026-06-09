@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="description" content="Formulario de registro para el sistema de reserva de salas de la Universidad de Talca">
     <title>Registrar Usuario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
     <div class="login-page">
         <div class="login-container">
-            <form action="index.html" method="post">
+            <form id="form" action="index.html" method="post">
                 <h2><i class="fa-solid fa-user-plus"></i> Registrarse</h2>
                 <div class="input-group">
                     <label for="reg-rut">RUT (sin puntos ni guión)</label>
@@ -61,7 +62,7 @@
                     <label for="reg-pass">Contraseña</label>
                     <input
                         type="password"
-                        id="reg-pass"
+                        id="reg-password"
                         name="password"
                         placeholder="Crea tu contraseña"
                         required

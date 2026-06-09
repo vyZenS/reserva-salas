@@ -6,15 +6,6 @@ const salas = [
     { id_sala: 4, nombre: "Sala de Estudio 3", ubicacion: "FEN - Primer Piso" }
 ];
 
-// Si no hay reservas guardadas, cargamos las de prueba
-if (!localStorage.getItem('misReservas')) {
-    const reservasBase = [
-        { id_reserva: 1, id_sala: 1, fecha: "2026-06-01", hora_inicio: "10:00", hora_fin: "12:00", motivo: "Estudio individual" },
-        { id_reserva: 2, id_sala: 3, fecha: "2026-06-10", hora_inicio: "14:00", hora_fin: "16:00", motivo: "Reunión de equipo" }
-    ];
-    localStorage.setItem('misReservas', JSON.stringify(reservasBase));
-}
-
 // Variable global para saber qué estamos mirando
 let vistaActual = 'mes';
 
@@ -24,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Validar si el usuario pasó por el Login
     const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
     if (!usuarioActivo) {
-        window.location.href = 'index.html'; // Lo pateamos si no está logueado
+        window.location.href = 'index.html'; 
         return;
     }
 
@@ -92,14 +83,29 @@ function configurarSelectoresVista() {
     });
 }
 
+let diaInicioSemana = 1; // Variable global para controlar el día que se muestra en la vista semanal (1 a 7)
+let diaSeleccionado = 1; // Variable global para controlar el día que se muestra en la vista diaria (1 a 30)
+
 // 4. RENDERIZADO DE LAS 3 VISTAS DEL CALENDARIO
 function renderizarEcosistema() {
     const reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
+    const tituloCalendario = document.getElementById('mes-actual');
     
-    if (vistaActual === 'mes') renderizarMes(reservas);
-    if (vistaActual === 'semana') renderizarSemana(reservas);
-    if (vistaActual === 'dia') renderizarDia(reservas);
-}
+    if (vistaActual === 'mes') {
+        tituloCalendario.innerText = 'Junio 2026';
+        renderizarMes(reservas);
+    }
+
+    if (vistaActual === 'semana') {
+        tituloCalendario.innerText = `Semana del ${diaInicioSemana} de Junio`;
+        renderizarSemana(reservas);
+    }
+
+    if (vistaActual === 'dia') {
+        tituloCalendario.innerText = `${diaSeleccionado} de Junio`;
+        renderizarDia(reservas);
+    }
+};
 
 function renderizarMes(reservas) {
     const grid = document.getElementById('calendario-grid');
@@ -131,62 +137,113 @@ function renderizarMes(reservas) {
 }
 
 function renderizarSemana(reservas) {
+    const thead = document.getElementById('cabecera-semana');
     const tbody = document.getElementById('grid-semana-body');
-    tbody.innerHTML = '';
 
-    for (let h = 7; h <= 20; h++) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><strong>${h}:00</strong></td>`;
+    if (!thead || !tbody) return;
 
-        for (let d = 1; d <= 7; d++) {
-            const fechaStr = `2026-06-${d.toString().padStart(2, '0')}`;
-            const reserva = reservas.find(r => r.fecha === fechaStr && parseInt(r.hora_inicio.split(':')[0]) === h);
-            
-            if (reserva) {
-                const sala = salas.find(s => s.id_sala == reserva.id_sala);
-                tr.innerHTML += `
-                    <td class="color-${reserva.id_sala}" style="color: #fff; padding: 5px; font-size: 0.8rem;">
-                        <strong>${sala ? sala.nombre : 'Sala'}</strong><br>${reserva.motivo}
-                    </td>
-                `;
-            } else {
-                tr.innerHTML += `<td onclick="abrirModalReserva('${fechaStr}')" style="cursor: pointer;"></td>`;
+    thead.innerHTML = '<tr><th style="width: 80px;">Hora</th>';
+    const diasNombres = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+    for (let i = 0; i < 7; i++) {
+        let diaActual = diaInicioSemana + i;
+        if (diaActual > 30) break; // Evitar pasar de junio
+        thead.innerHTML += `<th>${diasNombres[i]} ${diaActual.toString().padStart(2, '0')}</th>`;
+
+        tbody.innerHTML = '';
+        let skipCells = [0, 0, 0, 0, 0]; // Para controlar si se deben saltar celdas por reservas de varias horasx  
+
+        for (let h = 7; h <=20; h++) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="border: 1px solid var(--border-color); text-align: center;"><strong>${h}:00</strong></td>`;
+
+            for (let i = 0; i < 7; i++) {
+                if (skipCells[i] > 0) {
+                    skipCells[i]--;
+                    continue;
+                }
+
+                let diaActual = diaInicioSemana + i;
+                if (diaActual > 30) {
+                    tr.innerHTML += `<td style="background-color: rgba(0,0,0,0.05); border: 1px solid var(--border-color);"></td>`;
+                    continue;
+                }
+
+                const fechaStr = `2026-06-${diaActual.toString().padStart(2, '0')}`;
+                const reserva = reservas.find(r => r.fecha === fechaStr && parseInt(r.hora_inicio.split(':')[0]) === h);
+
+                if (reserva) {
+                    const sala = salas.find(s => s.id_sala === reserva.id_sala);
+
+                    // Calcular cuántas horas ocupa la reserva para saltar las celdas correspondientes
+                    const horaInicio = parseInt(reserva.hora_inicio.split(':')[0]);
+                    const horaFin = parseInt(reserva.hora_fin.split(':')[0]);
+                    const duracion = horaFin - horaInicio;
+                    if (duracion < 1) duracion = 1;
+
+                    // Marcar las celdas que deben ser saltadas
+                    skipCells[i] = duracion - 1; // Restamos 1 porque la celda actual ya se está usando
+
+                    tr.innerHTML += `
+                        <td rowspan="${duracion}" class="color-${reserva.id_sala}" style="border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2); vertical-align: top;">
+                            <strong style="display: block; margin-bottom: 4 px;">${sala ? sala.nombre : 'Reservado'}</strong><br>${reserva.motivo}
+                        </td>
+                    `;
+                } else {
+                    tr.innerHTML += `<td onclick="abrirModalReserva('${fechaStr}')" style="cursor: pointer; border: 1px solid var(--border-color); transition: background 0.2s;"></td>`;
+                }
             }
+            tbody.appendChild(tr);
         }
-        tbody.appendChild(tr);
     }
 }
 
 function renderizarDia(reservas) {
-    const cabecera = document.getElementById('cabecera-salas-dia');
-    const tbody = document.getElementById('grid-dia-body');
+        const cabecera = document.getElementById('cabecera-salas-dia');
+        const tbody = document.getElementById('grid-dia-body');
 
-    cabecera.innerHTML = '<th style="width: 80px;">Hora</th>';
-    salas.forEach(s => cabecera.innerHTML += `<th>${s.nombre}</th>`);
+        cabecera.innerHTML = '<th style="width: 80px;">Hora</th>';
+        salas.forEach(s => cabecera.innerHTML += `<th style="border: 1px solid var(--border-color);">${s.nombre}</th>`);
 
-    tbody.innerHTML = '';
-    const fechaFijaDia = "2026-06-01"; // Día de prueba para la vista diaria
+        tbody.innerHTML = '';
+        const fechaFijaDia = `2026-06-${diaSeleccionado.toString().padStart(2, '0')}`;
 
-    for (let h = 7; h <= 20; h++) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><strong>${h}:00</strong></td>`;
+        let skipCells = Array(salas.length).fill(0); // Para controlar si se deben saltar celdas por reservas de varias horas
 
-        salas.forEach(sala => {
-            const reserva = reservas.find(r => r.fecha === fechaFijaDia && r.id_sala === sala.id_sala && parseInt(r.hora_inicio.split(':')[0]) === h);
-            
-            if (reserva) {
-                tr.innerHTML += `
-                    <td class="color-${reserva.id_sala}" style="color: #fff; padding: 5px; text-align: center; font-size: 0.8rem;">
-                        ✅ Reservado
-                    </td>
-                `;
-            } else {
-                tr.innerHTML += `<td onclick="abrirModalReserva('${fechaFijaDia}')" style="cursor: pointer;"></td>`;
-            }
-        });
-        tbody.appendChild(tr);
+        for (let h = 7; h <= 20; h++) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="border: 1px solid var(--border-color); text-align: center;"><strong>${h}:00</strong></td>`;
+
+            salas.forEach((sala, index) => {
+                // Si la sala actual está ocupada por una reserva de varias horas, saltamos la celda
+                if (skipCells[index] > 0) {
+                    skipCells[index]--;
+                    return;
+                }
+
+                const reserva = reservas.find(r => r.fecha === fechaFijaDia && r.id_sala === sala.id_sala && parseInt(r.hora_inicio.split(':')[0]) === h);
+
+                if (reserva) {
+                    // Calcular duración para saltar celdas
+                    const horaInicio = parseInt(reserva.hora_inicio.split(':')[0]);
+                    const horaFin = parseInt(reserva.hora_fin.split(':')[0]);
+                    let duracion = horaFin - horaInicio;
+                    if (duracion < 1) duracion = 1;
+
+                    skipCells[index] = duracion - 1; // Restamos 1 porque la celda actual ya se está usando
+
+                    tr.innerHTML += `
+                        <td class="color-${reserva.id_sala}" style="border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2);">
+                            ${reserva.motivo}
+                        </td>
+                    `;
+                } else {
+                    tr.innerHTML += `<td onclick="abrirModalReserva('${fechaFijaDia}')" style="cursor: pointer; border: 1px solid var(--border-color); transition: background 0.2s;"></td>`;
+                }
+            });
+            tbody.appendChild(tr);
+        }
     }
-}
 
 // 5. LÓGICA DEL FORMULARIO Y MODALES
 const modal = document.getElementById('modal-reserva');
@@ -217,26 +274,46 @@ formReserva.addEventListener('submit', (e) => {
         motivo: document.getElementById('motivo').value
     };
 
-    // 2. Validar horas (la hora de inicio debe ser menor a la hora de fin)
-    if (nuevaReserva.hora_inicio >= nuevaReserva.hora_fin) {
+    // Reglas de Negocio:
+    // 1. Transformar horas a números decimales para facilitar validaciones (ej: 14:30 -> 14.5)
+    const [hInicio, mInicio] = nuevaReserva.hora_inicio.split(':').map(Number);
+    const [hFin, mFin] = nuevaReserva.hora_fin.split(':').map(Number);
+
+    const decimalInicio = hInicio + (mInicio / 60);
+    const decimalFin = hFin + (mFin / 60);
+
+    // 2. Validar horas de inicio y fin
+    if (decimalInicio >= decimalFin) {
         alert('La hora de inicio debe ser anterior a la hora de fin.');
         return;
     }
 
-    // 3. Guardar en memoria
+    // 3. Validar el rango permitido (7:00 a 23:00)
+    if (decimalInicio < 7 || decimalFin > 23) {
+        alert('Las reservas deben estar entre las 07:00 y las 23:00 horas.');
+        return;
+    }
+    
+    // 4. Validar el máximo de horas consecutivas (máximo 4 horas)
+    if (decimalFin - decimalInicio > 4) {
+        alert('No se pueden reservar más de 4 horas consecutivas.');
+        return;
+    }
+
+    // Guardar en memoria
     const reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
     reservas.push(nuevaReserva);
     localStorage.setItem('misReservas', JSON.stringify(reservas));
 
-    // 4. Cerrar y redibujar
+    // Cerrar y redibujar
     modal.style.display = 'none';
     renderizarEcosistema();
 
-    // 5. Consecuencia Visual (Toast)
+    // Notificación de éxito
     const selectSalas = document.getElementById('sala-select');
     const nombreSalaVisual = selectSalas.options[selectSalas.selectedIndex].text;
     
-    toastText.innerText = `✨ Reserva confirmada en ${nombreSalaVisual} a las ${nuevaReserva.hora_inicio} hrs.`;
+    toastText.innerText = `Reserva confirmada en ${nombreSalaVisual} a las ${nuevaReserva.hora_inicio} hrs.`;
     toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); }, 4000);
 
@@ -254,5 +331,31 @@ document.getElementById('theme-toggle').addEventListener('change', (e) => {
         document.body.classList.add('dark-mode');
     } else {
         document.body.classList.remove('dark-mode');
+    }
+});
+
+// 7. NAVEGACIÓN ENTRE SEMANA Y DÍA
+document.getElementById('btn-anterior').addEventListener('click', () => {
+    if (vistaActual === 'semana') {
+        diaInicioSemana = Math.max(diaInicioSemana - 7, 1);
+        renderizarEcosistema();
+    } else if (vistaActual === 'dia') {
+        diaSeleccionado = Math.max(diaSeleccionado - 1, 1);
+        renderizarEcosistema();
+    } else {
+        renderizarEcosistema(); // En vista mes, simplemente se vuelve a renderizar
+    }
+});
+
+document.getElementById('btn-siguiente').addEventListener('click', () => {
+    if (vistaActual === 'semana') {
+        // Limitamos para que no avance más allá del inicio de la última semana de Junio
+        diaInicioSemana = Math.min(diaInicioSemana + 7, 29);
+        renderizarEcosistema();
+    } else if (vistaActual === 'dia') {
+        diaSeleccionado = Math.min(diaSeleccionado + 1, 30);
+        renderizarEcosistema();
+    } else {
+        renderizarEcosistema(); // En vista mes, simplemente se vuelve a renderizar 
     }
 });
