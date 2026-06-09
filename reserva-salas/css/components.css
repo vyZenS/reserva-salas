@@ -1,0 +1,634 @@
+/* =========================================
+   1. VARIABLES GLOBALES & TEMA
+   ========================================= */
+:root {
+    --primary-color: #007bff;
+    --bg-color: #f4f6f8;
+    --sidebar-bg: #ffffff;
+    --main-content-bg: #ffffff;
+    --card-bg-color: #ffffff;
+    --text-color-primary: #343a40;
+    --text-color-secondary: #6c757d;
+    --border-color: #dee2e6;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --border-radius: 12px;
+    --modal-text-color: #343a40;
+
+    /* Variables Usuario */
+    --user-section-bg: #f1f3f5;
+    --user-section-border: transparent;
+}
+
+body.dark-mode {
+    --primary-color: #8a74f9;
+    --bg-color: #292c3a; /* Ajustado para consistencia */
+    --sidebar-bg: #1e202a;
+    --main-content-bg: #292c3a;
+    --card-bg-color: #292c3a;
+    --text-color-primary: #ffffff;
+    --text-color-secondary: #888;
+    --border-color: #43475c;
+    --modal-text-color: var(--text-color-primary);
+
+    /* Variables Usuario Dark */
+    --user-section-bg: rgba(0, 0, 0, 0.3);
+    --user-section-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Paleta de colores pastel (Reservas) */
+.color-1 { background-color: #a0c4ff; border-color: #6b9fed; color: #1c3d5a !important; }
+.color-2 { background-color: #9bf6b0; border-color: #63d47b; color: #1e4b28 !important; }
+.color-3 { background-color: #bdb2ff; border-color: #8f7fe8; color: #322a59 !important; }
+.color-4 { background-color: #fdffb6; border-color: #e3e67f; color: #5a5b2a !important; }
+.color-5 { background-color: #ffc6ff; border-color: #f291f2; color: #5a2a5a !important; }
+.color-6 { background-color: #ffadad; border-color: #e87b7b; color: #5c2a2a !important; }
+
+/* =========================================
+   2. RESET Y LAYOUT PRINCIPAL
+   ========================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color-primary);
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.app-layout { display: flex; height: 100vh; }
+
+.main-content {
+    flex-grow: 1; background-color: var(--main-content-bg);
+    padding: 2em; display: flex; flex-direction: column;
+    overflow-x: hidden;
+    width: 0;
+}
+
+/* =========================================
+   3. SIDEBAR (Barra Lateral)
+   ========================================= */
+.sidebar {
+    width: 280px;
+    min-width: 280px;
+    flex-shrink: 0;
+    background-color: var(--sidebar-bg);
+    color: var(--text-color-primary);
+    display: flex; flex-direction: column;
+    padding: 1.5em;
+    border-right: 1px solid var(--border-color);
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+    overflow-y: auto; /* Scroll si es muy alto */
+}
+
+.sidebar-header {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 1.2rem; padding-bottom: 1.5em;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color-primary);
+}
+
+.sidebar-nav { margin-top: 2em; }
+.sidebar-nav h3, .sidebar-actions h3 {
+    font-size: 0.85rem; text-transform: uppercase;
+    color: var(--text-color-secondary); margin-bottom: 1em; letter-spacing: 0.5px;
+}
+
+#lista-salas-sidebar { list-style: none; }
+#lista-salas-sidebar li {
+    padding: 0.8em 0; display: flex; align-items: center;
+    gap: 10px; font-weight: 500;
+}
+.sala-color-indicator { width: 12px; height: 12px; border-radius: 50%; }
+
+.sidebar-footer { margin-top: auto; text-align: center; color: var(--text-color-secondary); padding-top: 20px; }
+
+/* --- PERFIL DE USUARIO --- */
+.user-section {
+    margin-bottom: 1.5em; padding: 15px;
+    background-color: var(--user-section-bg);
+    border: 1px solid var(--user-section-border);
+    border-radius: 12px; transition: all 0.3s ease;
+}
+body.dark-mode .user-section {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-info { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.user-avatar {
+    width: 38px; height: 38px; background-color: var(--primary-color);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.1rem; flex-shrink: 0;
+}
+.user-name { font-size: 0.95rem; font-weight: 600; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color-primary); }
+.user-role { font-size: 0.8rem; color: var(--text-color-secondary); display: block; }
+body.dark-mode .user-role { color: rgba(255, 255, 255, 0.6); }
+.user-actions { display: flex; flex-direction: column; gap: 8px; }
+.user-details { overflow: hidden; }
+
+/* Botones dentro del perfil */
+.btn-manage, .btn-logout {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 500;
+    text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+}
+.btn-manage {
+    color: var(--primary-color); background-color: transparent;
+    border: 1px solid var(--primary-color);
+}
+.btn-manage:hover { background-color: var(--primary-color); color: white; }
+
+.btn-logout {
+    color: #dc3545; border: 1px solid transparent; background-color: transparent;
+}
+.btn-logout:hover {
+    background-color: rgba(220, 53, 69, 0.1); border-color: #dc3545;
+}
+
+/* --- SECCIÓN ACCIONES (Google/Outlook/Historial) --- */
+.sidebar-actions {
+    margin-top: 1.5em; padding-top: 1.5em;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-secondary {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; width: 100%; padding: 10px; margin-bottom: 10px;
+    font-size: 0.9rem; font-weight: 500; border-radius: 8px;
+    cursor: pointer; background-color: var(--bg-color);
+    color: var(--text-color-primary); border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+.btn-secondary:hover { border-color: var(--primary-color); color: var(--primary-color); }
+
+/* Botones específicos de integración */
+.btn-google { background-color: #f3f3f3; color: #333; border: 1px solid #ddd; }
+.btn-google:hover { background-color: #e5e5e5; }
+.btn-google-danger { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.btn-google-danger:hover { background-color: #fecaca; }
+
+.btn-ms { background-color: #f3f3f3; color: #333; border: 1px solid #ddd; }
+.btn-ms:hover { background-color: #e5e5e5; }
+.btn-ms-danger { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.btn-ms-danger:hover { background-color: #fecaca; }
+
+.btn-google svg, .btn-ms svg { margin-right: 5px; }
+
+.sync-button {
+    font-size: 0.8rem; padding: 6px;
+    border: 1px dashed var(--border-color);
+}
+/* Forzamos colores oscuros cuando el body tiene la clase dark-mode */
+body.dark-mode .btn-google,
+body.dark-mode .btn-ms, 
+body.dark-mode .btn-secondary {
+    background-color: #2b2b2b !important; /* Fondo gris oscuro */
+    color: #ffffff !important;             /* Texto blanco */
+    border: 1px solid #444 !important;     /* Borde sutil */
+}
+
+body.dark-mode .btn-google:hover,
+body.dark-mode .btn-ms:hover,
+body.dark-mode .btn-secondary:hover {
+    background-color: #3a3a3a !important; /* Un poco más claro al pasar el mouse */
+    border-color: var(--primary-color) !important;
+}
+/* =========================================
+   4. CALENDARIO (Tus estilos necesarios)
+   ========================================= */
+.calendar-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5em; color: var(--text-color-primary);
+}
+.calendar-nav h2 { font-size: 1.5rem; margin: 0; }
+.calendar-nav button {
+    background: none; border: none; color: var(--text-color-primary);
+    font-size: 1.5rem; cursor: pointer; padding: 0 10px;
+}
+
+/* Selector de Vistas (Mes/Semana/Día) */
+.view-selector button {
+    transition: all 0.2s;
+}
+.view-selector button:hover { opacity: 0.8; }
+
+.calendar-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    text-align: center; font-weight: 600;
+    color: var(--text-color-secondary); margin-bottom: 0.5em;
+}
+
+.calendar-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: minmax(120px, auto); gap: 5px; flex-grow: 1;
+}
+
+.calendar-day {
+    background-color: var(--main-content-bg); border-radius: 8px;
+    padding: 8px; border: 1px solid var(--border-color);
+    color: var(--text-color-primary); cursor: pointer; overflow-y: auto;
+    min-height: 120px; transition: border 0.2s;
+}
+.calendar-day:hover { border-color: var(--primary-color); }
+.calendar-day.not-current-month { background-color: transparent; color: #adb5bd; cursor: default; border: none; }
+body.dark-mode .calendar-day.not-current-month { color: #444; }
+
+.calendar-day.today { border: 2px solid var(--primary-color); }
+.calendar-day.today .day-number {
+    background-color: var(--primary-color); color: white !important;
+    border-radius: 50%; width: 24px; height: 24px;
+    display: inline-flex; justify-content: center; align-items: center;
+}
+
+.day-number { font-weight: 600; margin-bottom: 5px; }
+
+.booking-item {
+    padding: 4px 6px; border-radius: 4px; font-size: 0.75rem;
+    font-weight: 600; margin-top: 4px;
+    border-left: 3px solid rgba(0,0,0,0.2); 
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: transform 0.1s;
+}
+.booking-item:hover { transform: scale(1.02); }
+
+/* Días pasados */
+.calendar-day.past-day { background-color: rgba(0,0,0,0.02); color: #aaa; cursor: default; }
+body.dark-mode .calendar-day.past-day { background-color: rgba(255,255,255,0.02); color: #555; }
+
+/* =========================================
+   5. MODAL & FORMULARIOS
+   ========================================= */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); display: flex;
+    justify-content: center; align-items: center; z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: var(--card-bg-color); color: var(--text-color-primary);
+    padding: 2em; border-radius: var(--border-radius);
+    width: 90%; max-width: 500px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    max-height: 90vh; overflow-y: auto;
+}
+
+.form-group { margin-bottom: 1.2em; }
+.form-group label { display: block; margin-bottom: 0.5em; font-weight: 600; font-size: 0.9rem; }
+.form-group select, .form-group input, .form-group textarea {
+    width: 100%; padding: 10px; border: 1px solid var(--border-color);
+    border-radius: 8px; font-family: inherit;
+    font-size: 0.95rem; background-color: var(--bg-color); color: var(--modal-text-color);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.modal-actions { margin-top: 2em; display: flex; justify-content: flex-end; gap: 10px; }
+.modal-actions button {
+    border: none; border-radius: 8px; padding: 10px 20px;
+    font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.modal-actions button:hover { opacity: 0.9; }
+
+#save-btn { background-color: var(--primary-color); color: white; }
+#cancel-btn { background-color: #6c757d; color: white; }
+.delete-btn { background-color: #dc3545; color: white; margin-right: auto; }
+
+/* =========================================
+   6. LOGIN & REGISTRO
+   ========================================= */
+.login-page {
+    display: grid; place-items: center; min-height: 100vh;
+    background-color: var(--bg-color);
+}
+.login-container {
+    width: 100%; max-width: 400px;
+    background-color: var(--card-bg-color); color: var(--text-color-primary);
+    padding: 2.5em; border-radius: var(--border-radius);
+    box-shadow: var(--shadow); border-top: 5px solid var(--primary-color);
+}
+.login-container h2 { text-align: center; margin-bottom: 1.5em; }
+.login-container input, .login-container select {
+    width: 100%; padding: 12px; margin-bottom: 10px;
+    border: 1px solid var(--border-color); border-radius: 8px;
+    background: var(--bg-color); color: var(--text-color-primary);
+}
+.login-container button {
+    width: 100%; padding: 12px; background-color: var(--primary-color);
+    color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+    margin-top: 10px;
+}
+.register-link { text-align: center; margin-top: 15px; font-size: 0.9rem; }
+.register-link a { color: var(--primary-color); text-decoration: none; }
+.error-message { color: #dc3545; text-align: center; font-size: 0.9rem; margin-bottom: 10px; }
+
+/* =========================================
+   7. UTILIDADES
+   ========================================= */
+.toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background-color: var(--primary-color); color: white;
+    padding: 12px 20px; border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transform: translateY(150%); transition: transform 0.3s ease; z-index: 2000;
+}
+.toast.show { transform: translateY(0); }
+
+/* =========================================
+   8. ESTILOS AVANZADOS DEL HISTORIAL (Fusión)
+   ========================================= */
+
+/* 1. Contenedor de Filtros (Grid Horizontal) */
+.history-filters {
+    display: grid;
+    /* Crea columnas automáticas de mínimo 180px */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: var(--bg-color); /* Fondo suave */
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color-secondary);
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--card-bg-color); /* Fondo compatible con dark mode */
+    color: var(--text-color-primary);
+}
+
+/* 2. Tarjetas de Estadísticas (Fila Horizontal) */
+.history-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.stat-card i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+.stat-card h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color-primary);
+}
+
+.stat-card p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
+}
+
+/* Estilo especial para el botón PDF */
+.stat-card.action {
+    cursor: pointer;
+    border-color: var(--primary-color);
+    background-color: rgba(0, 123, 255, 0.05); /* Azul muy clarito */
+    transition: transform 0.2s;
+}
+/* Ajuste dark mode para el botón acción */
+body.dark-mode .stat-card.action {
+    background-color: rgba(138, 116, 249, 0.1); 
+}
+
+.stat-card.action:hover {
+    transform: translateY(-2px);
+    background-color: var(--primary-color);
+}
+.stat-card.action:hover h4,
+.stat-card.action:hover p,
+.stat-card.action:hover i {
+    color: white;
+}
+
+/* 3. Tabla de Resultados */
+.history-table-container {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden; /* Para bordes redondos */
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    background-color: var(--card-bg-color);
+}
+
+.history-table th {
+    background-color: var(--bg-color); /* Encabezado ligeramente distinto */
+    color: var(--text-color-secondary);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px;
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid var(--border-color);
+    z-index: 10;
+}
+
+.history-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color-primary);
+}
+
+.history-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badges (Etiquetas de estado y sala) */
+.sala-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.confirmada { background-color: rgba(40, 167, 69, 0.15); color: #28a745; }
+.status-badge.cancelada { background-color: rgba(220, 53, 69, 0.15); color: #dc3545; }
+.status-badge.pendiente { background-color: rgba(255, 193, 7, 0.15); color: #ffc107; }
+.status-badge.bloqueada { background-color: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
+
+/* =========================================
+   9. ESTILOS PANEL DE NOTIFICACIONES
+   ========================================= */
+.notif-item {
+    transition: background-color 0.2s;
+}
+.notif-item:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+.notif-item.unread {
+    background-color: rgba(0, 123, 255, 0.05); /* Azul muy clarito para no leídas */
+    border-left: 3px solid var(--primary-color);
+}
+
+.notif-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.notif-icon.success { color: #28a745; background-color: rgba(40, 167, 69, 0.1); }
+.notif-icon.warn { color: #ffc107; background-color: rgba(255, 193, 7, 0.1); }
+.notif-icon.error { color: #dc3545; background-color: rgba(220, 53, 69, 0.1); }
+
+.notif-content p {
+    color: var(--text-color-primary);
+    line-height: 1.4;
+}
+.notif-date {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+}
+
+/* =========================================
+   10. TRANSICIONES SUAVES TOTALES (FIX FINAL)
+   ========================================= */
+
+/* 1. Aplicar transición a TODOS los elementos base del calendario */
+.calendar-grid,           /* Contenedor Mes */
+.calendar-day,            /* Celda Mes */
+.calendar-week-view,      /* Contenedor Semana */
+.calendar-day-view,       /* Contenedor Día */
+table,                    /* Tablas en general */
+th,                       /* Encabezados de tabla */
+td {                      /* Celdas de tabla (los cuadrados blancos) */
+    transition: background-color 0.4s ease, 
+                color 0.4s ease, 
+                border-color 0.4s ease, 
+                box-shadow 0.4s ease !important;
+}
+
+/* 2. Elementos específicos internos */
+.booking-item,            /* Las barritas de colores de las reservas */
+.not-current-month,       /* Días grises del mes anterior */
+.time-cell,               /* Columna de hora */
+.grid-cell,               /* Celda vacía */
+.day-header,              /* Encabezado de día */
+.sidebar,                 /* Sidebar */
+.main-content,            /* Fondo principal */
+.login-container,         /* Login */
+.modal-content,           /* Modales */
+input, select, textarea { /* Inputs */
+    transition: background-color 0.4s ease, 
+                color 0.4s ease, 
+                border-color 0.4s ease, 
+                box-shadow 0.4s ease !important;
+}
+
+/* 3. Asegurar que el borde también transicione suave */
+*:hover {
+    transition: all 0.4s ease;
+}
+
+/* =========================================
+   11. BOTONES REPORTES (Animación Hover)
+   ========================================= */
+.btn-report {
+    display: inline-flex; /* Importante para que Link se comporte como botón */
+    align-items: center; 
+    gap: 8px;
+    padding: 10px 15px; 
+    border-radius: 8px;
+    font-weight: 600; 
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background: transparent;
+    border: 1px solid;
+    font-family: inherit;
+    text-decoration: none; /* Quita subrayado del Link */
+    font-size: 0.9rem;
+}
+
+/* Efecto al pasar el mouse (Elevación + Sombra) */
+.btn-report:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    color: white !important;
+}
+
+/* --- COLORES --- */
+
+/* 1. Volver (Gris -> Azul Oscuro o Gris Fuerte) */
+.btn-report.back {
+    color: var(--text-color-primary);
+    border-color: var(--border-color);
+}
+.btn-report.back:hover {
+    background-color: var(--text-color-secondary);
+    border-color: var(--text-color-secondary);
+}
+
+/* 2. PDF (Rojo) */
+.btn-report.pdf {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+.btn-report.pdf:hover {
+    background-color: #dc3545;
+}
+
+/* 3. Excel (Verde) */
+.btn-report.excel {
+    color: #198754;
+    border-color: #198754;
+}
+.btn-report.excel:hover {
+    background-color: #198754;
+}
+/* Switch Tema */
+.theme-switcher { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--primary-color); }
+input:checked + .slider:before { transform: translateX(24px); }

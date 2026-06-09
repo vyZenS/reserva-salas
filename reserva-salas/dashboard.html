@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Reservas</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <div class="app-layout">
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-calendar-days" style="color: var(--primary-color); font-size: 24px;"></i>
+                <h2>Reserva de Salas</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <h3>Salas Disponibles</h3>
+                <ul id="lista-salas-sidebar">
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar-text">U</div>
+                        <div class="user-details">
+                            <strong class="user-name" id="user-name-display">Cargando...</strong>
+                            <span class="user-role" id="user-role-display">Rol</span>
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn-logout" id="btn-logout">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Salir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="theme-switcher">
+                    <i class="fa-solid fa-sun"></i>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="calendar-nav">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button><i class="fa-solid fa-chevron-left"></i></button>
+                    <h2 style="min-width: 200px; text-align: center;">Junio 2026</h2>
+                    <button><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="view-selector">
+                    <button style="padding: 5px 10px; border-radius: 5px; border: none; background-color: var(--primary-color); color: white;">Mes</button>
+                </div>
+            </header>
+
+            <div class="calendar-weekdays">
+                <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+            </div>
+            
+            <div class="calendar-grid" id="calendario-grid">
+            </div>
+        </main>
+
+        <!-- MODAL DE RESERVA (Oculto por defecto) -->
+        <div id="modal-reserva" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <h3 style="margin-bottom: 15px;">Nueva Reserva</h3>
+                <form id="form-reserva">
+                    <div class="form-group">
+                        <label for="fecha-reserva">Fecha Seleccionada</label>
+                        <input type="text" id="fecha-reserva" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="sala-select">Sala</label>
+                        <select id="sala-select" required>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="width: 50%;">
+                            <label for="hora-inicio">Inicio</label>
+                            <input type="time" id="hora-inicio" value="09:00" required>
+                        </div>
+                        <div class="form-group" style="width: 50%;">
+                            <label for="hora-fin">Fin</label>
+                            <input type="time" id="hora-fin" value="10:00" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="motivo">Motivo</label>
+                        <input type="text" id="motivo" placeholder="Ej: Estudio grupal" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="cancel-btn">Cancelar</button>
+                        <button type="submit" id="save-btn">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- NOTIFICACIÓN (Toast) -->
+        <div id="notification-toast" class="toast">
+            <p id="notification-text"></p>
+        </div>
+
+    </div>
+    <script src="js/reservas.js"></script>
+</body>
+</html>
