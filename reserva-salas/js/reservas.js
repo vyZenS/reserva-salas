@@ -6,9 +6,7 @@ const salas = [
     { id_sala: 4, nombre: "Sala de Estudio 3", ubicacion: "FEN - Primer Piso" }
 ];
 
-// Variable global para saber qué estamos mirando
 let vistaActual = 'mes';
-
 
 // 2. INICIALIZACIÓN (AL CARGAR LA PÁGINA)
 document.addEventListener('DOMContentLoaded', () => {
@@ -39,7 +37,7 @@ function configurarSidebar() {
     const selectSalas = document.getElementById('sala-select');
     
     salas.forEach((sala, index) => {
-        // Pintar lista lateral
+        // Diseño de lista lateral
         listaSalas.innerHTML += `
             <li style="display: flex; align-items: center; gap: 10px; padding: 8px 0;">
                 <div class="sala-color-indicator color-${(index % 6) + 1}"></div>
@@ -49,7 +47,7 @@ function configurarSidebar() {
                 </div>
             </li>
         `;
-        // Pintar opciones del formulario
+        // Mostrar opciones del formulario
         selectSalas.innerHTML += `<option value="${sala.id_sala}">${sala.nombre}</option>`;
     });
 }
@@ -59,14 +57,14 @@ function configurarSelectoresVista() {
     
     botones.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Manejar clase CSS visual
+            // Manejar clase CSS para botón activo
             botones.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
             
             // Ocultar todas las vistas
             document.querySelectorAll('.sub-vista').forEach(v => v.style.display = 'none');
             
-            // Mostrar la correcta según el botón clickeado
+            // Mostrar la vista correspondiente según el botón clickeado
             if (e.target.id === 'vista-mes') {
                 vistaActual = 'mes';
                 document.getElementById('contenedor-vista-mes').style.display = 'block';
@@ -147,11 +145,11 @@ function renderizarSemana(reservas) {
 
     for (let i = 0; i < 7; i++) {
         let diaActual = diaInicioSemana + i;
-        if (diaActual > 30) break; // Evitar pasar de junio
+        if (diaActual > 30) break; // Evitar pasar de junio (inicialmente)
         thead.innerHTML += `<th>${diasNombres[i]} ${diaActual.toString().padStart(2, '0')}</th>`;
 
         tbody.innerHTML = '';
-        let skipCells = [0, 0, 0, 0, 0]; // Para controlar si se deben saltar celdas por reservas de varias horasx  
+        let skipCells = [0, 0, 0, 0]; // Para controlar si se deben saltar celdas por reservas de varias horas 
 
         for (let h = 7; h <=20; h++) {
             const tr = document.createElement('tr');
@@ -230,7 +228,7 @@ function renderizarDia(reservas) {
                     let duracion = horaFin - horaInicio;
                     if (duracion < 1) duracion = 1;
 
-                    skipCells[index] = duracion - 1; // Restamos 1 porque la celda actual ya se está usando
+                    skipCells[index] = duracion - 1; 
 
                     tr.innerHTML += `
                         <td class="color-${reserva.id_sala}" style="border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2);">

@@ -38,6 +38,7 @@ loginForm.addEventListener('submit', function(e) {
 
     let usuarioSimulado;
 
+    // Si las credenciales no coinciden con ningún usuario registrado, se muestra un mensaje de error
     if (usuarioEncontrado) {
         if (usuarioEncontrado.password !== password || usuarioEncontrado.email !== email) {
             errorMessage.textContent = 'Correo o contraseña incorrectos. Por favor, intenta de nuevo.';
@@ -48,7 +49,6 @@ loginForm.addEventListener('submit', function(e) {
         usuarioSimulado = usuarioEncontrado;
         console.log("Login exitoso:", usuarioSimulado);
     } else {
-        // Si no se encuentra el usuario, se crea un usuario simulado para pruebas
         errorMessage.textContent = 'Correo o contraseña incorrectos. Por favor, intenta de nuevo.';
         return;
     }
