@@ -21,7 +21,7 @@
 
 body.dark-mode {
     --primary-color: #8a74f9;
-    --bg-color: #292c3a; /* Ajustado para consistencia */
+    --bg-color: #292c3a; 
     --sidebar-bg: #1e202a;
     --main-content-bg: #292c3a;
     --card-bg-color: #292c3a;
@@ -145,12 +145,6 @@ body.dark-mode .user-role { color: rgba(255, 255, 255, 0.6); }
     background-color: rgba(220, 53, 69, 0.1); border-color: #dc3545;
 }
 
-/* --- SECCIÓN ACCIONES (Google/Outlook/Historial) --- */
-.sidebar-actions {
-    margin-top: 1.5em; padding-top: 1.5em;
-    border-top: 1px solid var(--border-color);
-}
-
 .btn-secondary {
     display: flex; align-items: center; justify-content: center;
     gap: 10px; width: 100%; padding: 10px; margin-bottom: 10px;
@@ -194,7 +188,7 @@ body.dark-mode .btn-secondary:hover {
     border-color: var(--primary-color) !important;
 }
 /* =========================================
-   4. CALENDARIO (Tus estilos necesarios)
+   4. CALENDARIO 
    ========================================= */
 .calendar-nav {
     display: flex; justify-content: space-between; align-items: center;
@@ -334,141 +328,6 @@ body.dark-mode .calendar-day.past-day { background-color: rgba(255,255,255,0.02)
 }
 .toast.show { transform: translateY(0); }
 
-/* =========================================
-   8. ESTILOS AVANZADOS DEL HISTORIAL (Fusión)
-   ========================================= */
-
-/* 1. Contenedor de Filtros (Grid Horizontal) */
-.history-filters {
-    display: grid;
-    /* Crea columnas automáticas de mínimo 180px */
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-bottom: 25px;
-    padding: 15px;
-    background-color: var(--bg-color); /* Fondo suave */
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.filter-group label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: var(--text-color-secondary);
-}
-
-.filter-group input,
-.filter-group select {
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--card-bg-color); /* Fondo compatible con dark mode */
-    color: var(--text-color-primary);
-}
-
-/* 2. Tarjetas de Estadísticas (Fila Horizontal) */
-.history-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.stat-card {
-    background-color: var(--card-bg-color);
-    border: 1px solid var(--border-color);
-    padding: 15px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-.stat-card i {
-    font-size: 1.8rem;
-    color: var(--primary-color);
-}
-
-.stat-card h4 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin: 0;
-    color: var(--text-color-primary);
-}
-
-.stat-card p {
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--text-color-secondary);
-}
-
-/* Estilo especial para el botón PDF */
-.stat-card.action {
-    cursor: pointer;
-    border-color: var(--primary-color);
-    background-color: rgba(0, 123, 255, 0.05); /* Azul muy clarito */
-    transition: transform 0.2s;
-}
-/* Ajuste dark mode para el botón acción */
-body.dark-mode .stat-card.action {
-    background-color: rgba(138, 116, 249, 0.1); 
-}
-
-.stat-card.action:hover {
-    transform: translateY(-2px);
-    background-color: var(--primary-color);
-}
-.stat-card.action:hover h4,
-.stat-card.action:hover p,
-.stat-card.action:hover i {
-    color: white;
-}
-
-/* 3. Tabla de Resultados */
-.history-table-container {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden; /* Para bordes redondos */
-    overflow-y: auto;
-    max-height: 350px;
-}
-
-.history-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    background-color: var(--card-bg-color);
-}
-
-.history-table th {
-    background-color: var(--bg-color); /* Encabezado ligeramente distinto */
-    color: var(--text-color-secondary);
-    font-weight: 600;
-    text-align: left;
-    padding: 12px;
-    position: sticky;
-    top: 0;
-    border-bottom: 2px solid var(--border-color);
-    z-index: 10;
-}
-
-.history-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-color-primary);
-}
-
-.history-table tr:last-child td {
-    border-bottom: none;
-}
-
 /* Badges (Etiquetas de estado y sala) */
 .sala-badge {
     padding: 4px 8px;
@@ -493,137 +352,12 @@ body.dark-mode .stat-card.action {
 .status-badge.pendiente { background-color: rgba(255, 193, 7, 0.15); color: #ffc107; }
 .status-badge.bloqueada { background-color: rgba(220, 53, 69, 0.2); color: #dc3545; border: 1px solid #dc3545; }
 
-/* =========================================
-   9. ESTILOS PANEL DE NOTIFICACIONES
-   ========================================= */
-.notif-item {
-    transition: background-color 0.2s;
-}
-.notif-item:hover {
-    background-color: rgba(0,0,0,0.03);
-}
-.notif-item.unread {
-    background-color: rgba(0, 123, 255, 0.05); /* Azul muy clarito para no leídas */
-    border-left: 3px solid var(--primary-color);
-}
-
-.notif-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-.notif-icon.success { color: #28a745; background-color: rgba(40, 167, 69, 0.1); }
-.notif-icon.warn { color: #ffc107; background-color: rgba(255, 193, 7, 0.1); }
-.notif-icon.error { color: #dc3545; background-color: rgba(220, 53, 69, 0.1); }
-
-.notif-content p {
-    color: var(--text-color-primary);
-    line-height: 1.4;
-}
-.notif-date {
-    font-size: 0.75rem;
-    color: var(--text-color-secondary);
-}
-
-/* =========================================
-   10. TRANSICIONES SUAVES TOTALES (FIX FINAL)
-   ========================================= */
-
-/* 1. Aplicar transición a TODOS los elementos base del calendario */
-.calendar-grid,           /* Contenedor Mes */
-.calendar-day,            /* Celda Mes */
-.calendar-week-view,      /* Contenedor Semana */
-.calendar-day-view,       /* Contenedor Día */
-table,                    /* Tablas en general */
-th,                       /* Encabezados de tabla */
-td {                      /* Celdas de tabla (los cuadrados blancos) */
-    transition: background-color 0.4s ease, 
-                color 0.4s ease, 
-                border-color 0.4s ease, 
-                box-shadow 0.4s ease !important;
-}
-
-/* 2. Elementos específicos internos */
-.booking-item,            /* Las barritas de colores de las reservas */
-.not-current-month,       /* Días grises del mes anterior */
-.time-cell,               /* Columna de hora */
-.grid-cell,               /* Celda vacía */
-.day-header,              /* Encabezado de día */
-.sidebar,                 /* Sidebar */
-.main-content,            /* Fondo principal */
-.login-container,         /* Login */
-.modal-content,           /* Modales */
-input, select, textarea { /* Inputs */
-    transition: background-color 0.4s ease, 
-                color 0.4s ease, 
-                border-color 0.4s ease, 
-                box-shadow 0.4s ease !important;
-}
 
 /* 3. Asegurar que el borde también transicione suave */
 *:hover {
     transition: all 0.4s ease;
 }
 
-/* =========================================
-   11. BOTONES REPORTES (Animación Hover)
-   ========================================= */
-.btn-report {
-    display: inline-flex; /* Importante para que Link se comporte como botón */
-    align-items: center; 
-    gap: 8px;
-    padding: 10px 15px; 
-    border-radius: 8px;
-    font-weight: 600; 
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-    background: transparent;
-    border: 1px solid;
-    font-family: inherit;
-    text-decoration: none; /* Quita subrayado del Link */
-    font-size: 0.9rem;
-}
-
-/* Efecto al pasar el mouse (Elevación + Sombra) */
-.btn-report:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    color: white !important;
-}
-
-/* --- COLORES --- */
-
-/* 1. Volver (Gris -> Azul Oscuro o Gris Fuerte) */
-.btn-report.back {
-    color: var(--text-color-primary);
-    border-color: var(--border-color);
-}
-.btn-report.back:hover {
-    background-color: var(--text-color-secondary);
-    border-color: var(--text-color-secondary);
-}
-
-/* 2. PDF (Rojo) */
-.btn-report.pdf {
-    color: #dc3545;
-    border-color: #dc3545;
-}
-.btn-report.pdf:hover {
-    background-color: #dc3545;
-}
-
-/* 3. Excel (Verde) */
-.btn-report.excel {
-    color: #198754;
-    border-color: #198754;
-}
-.btn-report.excel:hover {
-    background-color: #198754;
-}
 /* Switch Tema */
 .theme-switcher { display: flex; align-items: center; justify-content: center; gap: 10px; }
 .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
