@@ -56,12 +56,12 @@ loginForm.addEventListener('submit', function(e) {
 
     const usuariosRegistrados = JSON.parse(localStorage.getItem('usuarios')) || [];
 
-    // Evitar registros duplicados por RUT o correo
+    // Evitar registros duplicados por RUT
     if (usuariosRegistrados.some(u => u.rut === rut)) {
         errorMessage.textContent = 'Ya existe un usuario registrado con este RUT.';
         return;
     }
-    
+    // Evitar registros duplicados por correo
     if (usuariosRegistrados.some(u => u.email === email)) {
         errorMessage.textContent = 'Ya existe un usuario registrado con este correo.';
         return;
