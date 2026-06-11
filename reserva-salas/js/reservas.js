@@ -298,6 +298,19 @@ formReserva.addEventListener('submit', (e) => {
         return;
     }
 
+    // 5. Validar que no sea una reserva en el pasado (comparando con la fecha y hora actual)
+    const ahora = new Date();
+    const hoyStr = `${ahora.getFullYear()}-${(ahora.getMonth() + 1).toString().padStart(2, '0')}-${ahora.getDate().toString().padStart(2, '0')}`;
+    
+    if (nuevaReserva.fecha === hoyStr) {
+        const horaActualDecimal = ahora.getHours() + (ahora.getMinutes() / 60);
+
+        if (decimalInicio < horaActualDecimal) {
+            alert('No se pueden hacer reservas para horas pasadas del día actual.');
+            return;
+        }
+    }
+
     // Guardar en memoria
     const reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
     reservas.push(nuevaReserva);

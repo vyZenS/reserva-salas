@@ -58,12 +58,12 @@ loginForm.addEventListener('submit', function(e) {
 
     // Evitar registros duplicados por RUT
     if (usuariosRegistrados.some(u => u.rut === rut)) {
-        errorMessage.textContent = 'Ya existe un usuario registrado con este RUT.';
+        alert ('Ya existe un usuario registrado con este RUT.');
         return;
     }
     // Evitar registros duplicados por correo
     if (usuariosRegistrados.some(u => u.email === email)) {
-        errorMessage.textContent = 'Ya existe un usuario registrado con este correo.';
+        alert ('Ya existe un usuario registrado con este correo.');
         return;
     }
 
