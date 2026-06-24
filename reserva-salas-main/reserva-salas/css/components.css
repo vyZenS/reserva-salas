@@ -366,3 +366,52 @@ body.dark-mode .calendar-day.past-day { background-color: rgba(255,255,255,0.02)
 .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--primary-color); }
 input:checked + .slider:before { transform: translateX(24px); }
+
+
+/* =========================================
+   8. DISEÑO RESPONSIVO (MEDIA QUERIES)
+   ========================================= */
+@media (max-width: 768px) {
+    .app-layout {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1em;
+    }
+
+    .main-content {
+        width: 100%;
+        padding: 1em;
+    }
+
+    .calendar-nav {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Ajuste para que los modales no se salgan de la pantalla */
+    .modal-content {
+        width: 95%;
+        padding: 1.5em;
+    }
+}
+
+
+/* Efecto cebra para las tablas de las vistas "Semana" y "Día" usando :nth-child */
+.history-table tbody tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+body.dark-mode .history-table tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Efecto hover avanzado con combinador para las celdas de las tablas */
+.history-table tbody td:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
