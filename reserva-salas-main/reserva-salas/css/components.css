@@ -401,8 +401,6 @@ input:checked + .slider:before { transform: translateX(24px); }
     }
 }
 
-
-/* Efecto cebra para las tablas de las vistas "Semana" y "Día" usando :nth-child */
 .history-table tbody tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.02);
 }
@@ -411,7 +409,9 @@ body.dark-mode .history-table tbody tr:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* Efecto hover avanzado con combinador para las celdas de las tablas */
 .history-table tbody td:hover {
     background-color: rgba(0, 123, 255, 0.05);
 }
+
+
+/**/
