@@ -40,3 +40,4 @@ Dado que es una aplicación web *Client-Side* pura (Vanilla CSS/JS), no requiere
 ## Autores / Integrantes del grupo
 - Martin Castro
 - Vicente Durán
+
