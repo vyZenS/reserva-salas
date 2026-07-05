@@ -327,73 +327,108 @@ body.dark-mode {
     color-scheme: dark;
 }
 
-/* --- 8. ADAPTACIÓN PARA CELULARES (RESPONSIVE) --- */
+/* --- 8. ADAPTACIÓN TIPO APP NATIVA PARA CELULARES --- */
 @media screen and (max-width: 768px) {
     
-    /* 1. Contenedor principal a vertical */
+    /* 1. Layout general ajustado al alto real de la pantalla */
     .app-layout { 
         flex-direction: column !important; 
-        height: auto !important;
+        height: 100vh !important;
+        overflow: hidden !important; /* Evita que toda la página baile */
     }
 
-    /* 2. Sidebar se vuelve un menú superior compacto */
+    /* 2. Sidebar Ultra-Compacto (Panel Superior) */
     .sidebar {
         width: 100% !important;
         min-width: 100% !important;
         height: auto !important;
-        max-height: 280px !important; /* Límite para que no empuje el calendario al fondo */
+        padding: 10px 15px !important;
         border-right: none !important;
-        border-bottom: 2px solid var(--border-color) !important;
-        padding: 15px !important;
-        overflow-y: auto !important; 
-    }
-
-    /* 3. Reordenar las salas en horizontal para aprovechar espacio */
-    #lista-salas-sidebar {
+        border-bottom: 1px solid var(--border-color) !important;
         display: flex !important;
-        flex-wrap: wrap !important;
+        flex-direction: column !important;
         gap: 10px !important;
     }
+    
+    .sidebar-header { padding-bottom: 0 !important; border: none !important; }
+    .sidebar-nav { margin-top: 0 !important; }
+    .sidebar-nav h3 { display: none !important; } /* Ocultamos el título para ganar espacio */
+
+    /* 3. Carrusel horizontal para las salas */
+    #lista-salas-sidebar {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 15px !important;
+        padding-bottom: 5px !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+    }
+    #lista-salas-sidebar::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
     #lista-salas-sidebar li {
-        padding: 4px 0 !important;
+        white-space: nowrap !important;
+        font-size: 0.85rem !important;
+        background: var(--bg-color);
+        padding: 6px 12px !important;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
     }
 
-    /* 4. Contenido Principal sube y usa todo el ancho */
+    /* 4. Ocultamos el footer del usuario para no saturar la pantalla */
+    .sidebar-footer { display: none !important; } 
+
+    /* 5. Área del calendario */
     .main-content {
         width: 100% !important;
-        padding: 15px !important;
+        padding: 10px !important;
+        overflow-y: auto !important;
+        flex-grow: 1 !important;
     }
 
-    /* 5. Navegación del calendario (domamos tus estilos en línea) */
-    .calendar-nav {
-        flex-direction: column !important;
-        gap: 15px !important;
-    }
+    /* 6. Header del Calendario más compacto */
+    .calendar-nav { gap: 10px !important; margin-bottom: 15px !important; }
+    .calendar-nav h2 { font-size: 1.2rem !important; min-width: auto !important; }
     
-    .calendar-nav > div {
-        width: 100% !important;
-        justify-content: center !important;
-    }
-
-    /* 6. Los botones de Mes, Semana, Día se estiran equitativamente */
+    /* 7. Botones Mes/Semana/Día estilo "Segment Control" (iOS) */
     .view-selector {
+        background-color: var(--border-color) !important;
+        border-radius: 10px !important;
+        padding: 4px !important;
         width: 100% !important;
+        display: flex !important;
     }
     .view-selector button {
         flex: 1 !important;
+        font-size: 0.85rem !important;
+        padding: 6px !important;
+        border-radius: 8px !important;
+        background: transparent !important;
+        border: none !important;
+        color: var(--text-color-secondary) !important;
+    }
+    .view-selector button.active {
+        background-color: var(--card-bg-color) !important;
+        color: var(--primary-color) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
     }
 
-    /* 7. Modal y botones adaptados para que no se corten */
-    .modal-content {
-        width: 95% !important;
-        padding: 1.5em !important;
+    /* 8. EL FIX MÁGICO DEL CALENDARIO: Forzar scroll horizontal en vez de aplastar */
+    #contenedor-vista-mes {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
     }
-    .modal-actions {
-        flex-direction: column !important;
-        width: 100% !important;
+    .calendar-weekdays, .calendar-grid {
+        min-width: 600px !important; /* Fuerza un ancho mínimo, el usuario hace swipe */
     }
-    .modal-actions button {
-        width: 100% !important;
-        margin: 0 !important;
+    .calendar-day {
+        min-height: 90px !important; /* Altura decente para las cajas */
+        padding: 5px !important;
     }
+    .day-number { font-size: 0.9rem !important; }
+
+    /* 9. Modal adaptado */
+    .modal-content { width: 95% !important; padding: 1.2em !important; }
+    .modal-actions { flex-direction: column !important; }
+    .modal-actions button { width: 100% !important; margin-bottom: 8px !important; }
 }
