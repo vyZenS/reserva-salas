@@ -8,14 +8,18 @@ const salas = [
 
 // Variables de estado global para controlar los meses
 let vistaActual = 'mes';
-let mesActual = 6; 
-let anoActual = 2026;
+
+// Variables para controlar la fecha actual y la vista
+let fechaActual = new Date();
+let mesActual = fechaActual.getMonth() + 1; 
+let anoActual = fechaActual.getFullYear();
+
 const nombreMeses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 let diaInicioSemana = 1; 
 let diaSeleccionado = 1; 
 
-// 2. INICIALIZACIÓN (AL CARGAR LA PÁGINA)
+// 2. INICIALIZACIÓN 
 document.addEventListener('DOMContentLoaded', () => {
     const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
     if (!usuarioActivo) {
@@ -34,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarEcosistema();
 });
 
-// 3. CONFIGURACIÓN DE INTERFAZ (SIDEBAR Y BOTONES)
+// 3. CONFIGURACIÓN DE INTERFAZ
 function configurarSidebar() {
     const listaSalas = document.getElementById('lista-salas-sidebar');
     const selectSalas = document.getElementById('sala-select');
@@ -79,9 +83,9 @@ function configurarSelectoresVista() {
     });
 }
 
-// 4. RENDERIZADO DEL CALENDARIO REAL (CÁLCULO MATEMÁTICO DE FECHAS)
+// 4. RENDERIZADO DEL CALENDARIO REAL 
 function obtenerDiasDelMes(ano, mes) {
-    // Retorna la cantidad exacta de días (ej: Febrero 2026 = 28, Febrero 2028 = 29)
+    // Retorna la cantidad exacta de días del mes considerando años bisiestos
     return new Date(ano, mes, 0).getDate();
 }
 
@@ -114,7 +118,7 @@ function renderizarMes(reservas) {
     // 1. Cálculos de Calendario Real
     const diasDelMes = obtenerDiasDelMes(anoActual, mesActual);
     
-    // Obtenemos en qué día de la semana cae el día 1 (0 = Domingo, 1 = Lunes...)
+    // Obtenemos en qué día de la semana cae el día 1 
     let primerDiaSemana = new Date(anoActual, mesActual - 1, 1).getDay();
     // Ajustamos para que Lunes sea 0 y Domingo sea 6
     primerDiaSemana = primerDiaSemana === 0 ? 6 : primerDiaSemana - 1;
