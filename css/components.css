@@ -315,7 +315,7 @@ body.dark-mode .history-table tbody tr:nth-child(even) {
     background-color: rgba(0, 123, 255, 0.05);
 }
 
-/* --- FIX PARA EL ÍCONO DEL RELOJ --- */
+/* --- ÍCONO DEL RELOJ --- */
 /* 1. Modo Claro: */
 input[type="time"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -327,45 +327,73 @@ body.dark-mode {
     color-scheme: dark;
 }
 
-/* --- ADAPTACIÓN PARA CELULARES --- */
+/* --- 8. ADAPTACIÓN PARA CELULARES (RESPONSIVE) --- */
 @media screen and (max-width: 768px) {
     
-    /* 1. Cambiar el contenedor principal para que los elementos se apilen verticalmente */
-    body, .contenedor-principal, .app-container { 
-        display: flex;
-        flex-direction: column;
+    /* 1. Contenedor principal a vertical */
+    .app-layout { 
+        flex-direction: column !important; 
+        height: auto !important;
     }
 
-    /* 2. El sidebar deja de estar pegado a la izquierda y toma el ancho completo de la pantalla */
+    /* 2. Sidebar se vuelve un menú superior compacto */
     .sidebar {
         width: 100% !important;
+        min-width: 100% !important;
         height: auto !important;
-        min-height: auto;
-        position: relative;
-        border-right: none;
-        border-bottom: 2px solid var(--border-color);
-        padding-bottom: 20px;
+        max-height: 280px !important; /* Límite para que no empuje el calendario al fondo */
+        border-right: none !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        padding: 15px !important;
+        overflow-y: auto !important; 
     }
 
-    /* 3. El contenido del calendario toma el resto del espacio */
-    .main-content, .contenido-derecho {
+    /* 3. Reordenar las salas en horizontal para aprovechar espacio */
+    #lista-salas-sidebar {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+    #lista-salas-sidebar li {
+        padding: 4px 0 !important;
+    }
+
+    /* 4. Contenido Principal sube y usa todo el ancho */
+    .main-content {
         width: 100% !important;
-        padding: 10px;
+        padding: 15px !important;
     }
 
-    /* 4. Hacemos que las tablas (vista semanal/diaria) puedan deslizarse hacia los lados sin deformar la página */
-    .table-container, .calendario-grid {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    /* 5. Navegación del calendario (domamos tus estilos en línea) */
+    .calendar-nav {
+        flex-direction: column !important;
+        gap: 15px !important;
     }
     
-    /* 5. Ajuste de los botones del modal para que no se aprieten */
+    .calendar-nav > div {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* 6. Los botones de Mes, Semana, Día se estiran equitativamente */
+    .view-selector {
+        width: 100% !important;
+    }
+    .view-selector button {
+        flex: 1 !important;
+    }
+
+    /* 7. Modal y botones adaptados para que no se corten */
+    .modal-content {
+        width: 95% !important;
+        padding: 1.5em !important;
+    }
     .modal-actions {
-        flex-direction: column;
-        width: 100%;
+        flex-direction: column !important;
+        width: 100% !important;
     }
-    
     .modal-actions button {
-        width: 100%;
+        width: 100% !important;
+        margin: 0 !important;
     }
 }
