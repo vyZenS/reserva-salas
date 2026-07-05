@@ -326,3 +326,46 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 body.dark-mode {
     color-scheme: dark;
 }
+
+/* --- ADAPTACIÓN PARA CELULARES --- */
+@media screen and (max-width: 768px) {
+    
+    /* 1. Cambiar el contenedor principal para que los elementos se apilen verticalmente */
+    body, .contenedor-principal, .app-container { 
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* 2. El sidebar deja de estar pegado a la izquierda y toma el ancho completo de la pantalla */
+    .sidebar {
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 20px;
+    }
+
+    /* 3. El contenido del calendario toma el resto del espacio */
+    .main-content, .contenido-derecho {
+        width: 100% !important;
+        padding: 10px;
+    }
+
+    /* 4. Hacemos que las tablas (vista semanal/diaria) puedan deslizarse hacia los lados sin deformar la página */
+    .table-container, .calendario-grid {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* 5. Ajuste de los botones del modal para que no se aprieten */
+    .modal-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .modal-actions button {
+        width: 100%;
+    }
+}
