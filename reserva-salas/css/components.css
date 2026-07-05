@@ -1,36 +1,44 @@
 /* 1. VARIABLES GLOBALES & TEMA */
 :root {
-    --primary-color: #007bff;
-    --bg-color: #f4f6f8;
+    /* Color principal: Verde Esmeralda vibrante pero profesional */
+    --primary-color: #10b981; 
+    
+    /* Fondos: Blanco puro y un gris extremadamente claro para contrastar */
+    --bg-color: #f8fafc; 
     --sidebar-bg: #ffffff;
     --main-content-bg: #ffffff;
     --card-bg-color: #ffffff;
-    --text-color-primary: #343a40;
-    --text-color-secondary: #6c757d;
-    --border-color: #dee2e6;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    
+    /* Textos: Gris carbón para no usar negro puro */
+    --text-color-primary: #1e293b;
+    --text-color-secondary: #64748b;
+    
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     --border-radius: 12px;
-    --modal-text-color: #343a40;
+    --modal-text-color: #1e293b;
 
-    /* Variables Usuario */
-    --user-section-bg: #f1f3f5;
+    --user-section-bg: #f1f5f9;
     --user-section-border: transparent;
 }
 
 body.dark-mode {
-    --primary-color: #8a74f9;
-    --bg-color: #292c3a; 
-    --sidebar-bg: #1e202a;
-    --main-content-bg: #292c3a;
-    --card-bg-color: #292c3a;
-    --text-color-primary: #ffffff;
-    --text-color-secondary: #888;
-    --border-color: #43475c;
+    /* Verde un poco más menta para que brille en fondo oscuro */
+    --primary-color: #34d399; 
+    
+    --bg-color: #0f172a; 
+    --sidebar-bg: #1e293b;
+    --main-content-bg: #0f172a;
+    --card-bg-color: #1e293b;
+    
+    --text-color-primary: #f8fafc;
+    --text-color-secondary: #94a3b8;
+    
+    --border-color: #334155;
     --modal-text-color: var(--text-color-primary);
 
-    /* Variables Usuario Dark */
-    --user-section-bg: rgba(0, 0, 0, 0.3);
-    --user-section-border: rgba(255, 255, 255, 0.1);
+    --user-section-bg: rgba(255, 255, 255, 0.05);
+    --user-section-border: rgba(255, 255, 255, 0.05);
 }
 
 /* Paleta de colores pastel (Reservas) */
@@ -204,14 +212,19 @@ body.dark-mode .calendar-day.past-day { background-color: rgba(255,255,255,0.02)
 
 .modal-actions { margin-top: 2em; display: flex; justify-content: flex-end; gap: 10px; }
 .modal-actions button {
-    border: none; border-radius: 8px; padding: 10px 20px;
-    font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
 }
-.modal-actions button:hover { opacity: 0.9; }
+.modal-actions button:hover { opacity: 0.8; }
 
 #save-btn { background-color: var(--primary-color); color: white; }
 #cancel-btn { background-color: #6c757d; color: white; }
-.delete-btn { background-color: #dc3545; color: white; margin-right: auto; }
+#delete-btn { background-color: #dc3545; color: white; margin-right: auto; }
 
 /* 6. LOGIN & REGISTRO */
 .login-page {
@@ -300,4 +313,16 @@ body.dark-mode .history-table tbody tr:nth-child(even) {
 
 .history-table tbody td:hover {
     background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* --- FIX PARA EL ÍCONO DEL RELOJ --- */
+/* 1. Modo Claro: */
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    /* Oscurece el ícono blanco por defecto del navegador */
+    filter: invert(0.6); 
+}
+body.dark-mode {
+    color-scheme: dark;
 }
