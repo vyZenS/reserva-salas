@@ -2,8 +2,10 @@
 const salas = [
     { id_sala: 1, nombre: "Sala de Estudio 1", ubicacion: "FEN - Primer Piso" },
     { id_sala: 2, nombre: "Sala de Estudio 2", ubicacion: "FEN - Primer Piso" },
-    { id_sala: 3, nombre: "Arrayán 3", ubicacion: "Salas Arrayán" },
-    { id_sala: 4, nombre: "Sala de Estudio 3", ubicacion: "FEN - Primer Piso" }
+    { id_sala: 3, nombre: "Sala de Estudio 3", ubicacion: "FEN - Primer Piso" },
+    { id_sala: 4, nombre: "Arrayán 1", ubicacion: "Salas Arrayán" },
+    { id_sala: 5, nombre: "Arrayán 2", ubicacion: "Salas Arrayán" },
+    { id_sala: 6, nombre: "Arrayán 3", ubicacion: "Salas Arrayán" }
 ];
 
 // Variables de estado global para controlar los meses
@@ -151,9 +153,10 @@ function renderizarMes(reservas) {
         reservasDelDia.forEach(res => {
             const salaReserva = salas.find(s => s.id_sala == res.id_sala);
             divDia.innerHTML += `
-                <div class="booking-item color-${res.id_sala}" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${res.hora_inicio} - ${salaReserva ? salaReserva.nombre : 'Sala'}</span>
-                    <i class="fa-solid fa-trash" style="cursor:pointer; opacity:0.6; margin-left: 5px;" onclick="eliminarReserva(${res.id_reserva}, event)" title="Eliminar reserva"></i>
+                <div class="booking-item color-${res.id_sala}" onclick="abrirDetalleReserva(${res.id_reserva}, event)" style="padding: 4px 8px; margin-top: 4px; border-radius: 6px; font-size: 0.75rem; box-sizing: border-box; width: 100%; cursor: pointer;">
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;">
+                        <strong>${res.hora_inicio}</strong> - ${salaReserva ? salaReserva.nombre : 'Sala'}
+                    </span>
                 </div>
             `;
         });
@@ -219,9 +222,8 @@ function renderizarSemana(reservas) {
                 skipCells[i] = duracion - 1; 
 
                 tr.innerHTML += `
-                    <td rowspan="${duracion}" class="color-${reserva.id_sala}" style="border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2); vertical-align: top; position: relative;">
-                        <i class="fa-solid fa-trash" style="cursor:pointer; position:absolute; top:8px; right:8px; opacity:0.6;" onclick="eliminarReserva(${res.id_reserva}, event)" title="Eliminar reserva"></i>
-                        <strong style="display: block; margin-bottom: 4px; padding-right: 15px;">${sala ? sala.nombre : 'Reservado'}</strong>${reserva.motivo}
+                    <td rowspan="${duracion}" onclick="abrirDetalleReserva(${reserva.id_reserva}, event)" class="color-${reserva.id_sala}" style="cursor: pointer; border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2); vertical-align: top;">
+                        <strong style="display: block; margin-bottom: 4px;">${sala ? sala.nombre : 'Reservado'}</strong>${reserva.motivo}
                     </td>
                 `;
             } else {
@@ -265,9 +267,8 @@ function renderizarDia(reservas) {
                 skipCells[index] = duracion - 1; 
 
                 tr.innerHTML += `
-                    <td rowspan="${duracion}" class="color-${reserva.id_sala}" style="border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2); vertical-align: top; position: relative;">
-                        <i class="fa-solid fa-trash" style="cursor:pointer; position:absolute; top:8px; right:8px; opacity:0.6;" onclick="eliminarReserva(${res.id_reserva}, event)" title="Eliminar reserva"></i>
-                        <strong style="display: block; margin-bottom: 4px; padding-right: 15px;">✅ Reservado</strong>${reserva.motivo}
+                    <td rowspan="${duracion}" onclick="abrirDetalleReserva(${reserva.id_reserva}, event)" class="color-${reserva.id_sala}" style="cursor: pointer; border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2); vertical-align: top;">
+                        <strong style="display: block; margin-bottom: 4px;">✅ Reservado</strong>${reserva.motivo}
                     </td>
                 `;
             } else {
@@ -285,29 +286,77 @@ const inputFecha = document.getElementById('fecha-reserva');
 const toast = document.getElementById('notification-toast');
 const toastText = document.getElementById('notification-text');
 
+// Referencias a los botones con los nuevos IDs
+const saveBtn = document.getElementById('save-btn');
+const deleteBtn = document.getElementById('delete-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+
+let reservaActivaId = null;
+
+// Para CREAR una reserva nueva
 function abrirModalReserva(fecha) {
+    reservaActivaId = null;
+    formReserva.reset();
     inputFecha.value = fecha; 
+
+    // MODO CREACIÓN: Mostramos Guardar, ocultamos Eliminar
+    if (saveBtn) {
+        saveBtn.style.display = 'inline-block';
+        saveBtn.innerText = 'Guardar';
+    }
+    if (deleteBtn) deleteBtn.style.display = 'none';
+
     modal.style.display = 'flex';
 }
 
-document.getElementById('cancel-btn').addEventListener('click', () => {
-    modal.style.display = 'none';
-});
+// Para VER/MODIFICAR/ELIMINAR una reserva existente
+window.abrirDetalleReserva = function(idReserva, event) {
+    event.stopPropagation(); // Evita que el clic traspase y abra una reserva nueva
+    
+    const reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
+    const reserva = reservas.find(r => r.id_reserva === idReserva);
+    
+    if (reserva) {
+        reservaActivaId = idReserva;
 
+        // Llenamos los campos con los datos existentes
+        inputFecha.value = reserva.fecha;
+        document.getElementById('sala-select').value = reserva.id_sala;
+        document.getElementById('hora-inicio').value = reserva.hora_inicio;
+        document.getElementById('hora-fin').value = reserva.hora_fin;
+        document.getElementById('motivo').value = reserva.motivo;
+
+        // MODO EDICIÓN: Mostramos Guardar (como Actualizar) y mostramos Eliminar
+        if (saveBtn) {
+            saveBtn.style.display = 'inline-block';
+            saveBtn.innerText = 'Actualizar';
+        }
+        if (deleteBtn) deleteBtn.style.display = 'inline-block';
+        
+        modal.style.display = 'flex';
+    }
+};
+
+// Evento para CERRAR el modal (Global, para que no se dupliquen listeners)
+if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+}
+
+// Lógica para GUARDAR o ACTUALIZAR
 formReserva.addEventListener('submit', (e) => {
     e.preventDefault(); 
 
-    const nuevaReserva = {
-        id_reserva: Date.now(), 
-        id_sala: parseInt(document.getElementById('sala-select').value),
-        fecha: document.getElementById('fecha-reserva').value,
-        hora_inicio: document.getElementById('hora-inicio').value,
-        hora_fin: document.getElementById('hora-fin').value,
-        motivo: document.getElementById('motivo').value
-    };
+    // Recolectamos datos del formulario
+    const id_sala = parseInt(document.getElementById('sala-select').value);
+    const fecha = document.getElementById('fecha-reserva').value;
+    const hora_inicio = document.getElementById('hora-inicio').value;
+    const hora_fin = document.getElementById('hora-fin').value;
+    const motivo = document.getElementById('motivo').value;
 
-    const [hInicio, mInicio] = nuevaReserva.hora_inicio.split(':').map(Number);
-    const [hFin, mFin] = nuevaReserva.hora_fin.split(':').map(Number);
+    const [hInicio, mInicio] = hora_inicio.split(':').map(Number);
+    const [hFin, mFin] = hora_fin.split(':').map(Number);
     const decimalInicio = hInicio + (mInicio / 60);
     const decimalFin = hFin + (mFin / 60);
 
@@ -329,7 +378,7 @@ formReserva.addEventListener('submit', (e) => {
     const ahora = new Date();
     const hoyStr = `${ahora.getFullYear()}-${(ahora.getMonth() + 1).toString().padStart(2, '0')}-${ahora.getDate().toString().padStart(2, '0')}`;
     
-    if (nuevaReserva.fecha === hoyStr) {
+    if (fecha === hoyStr) {
         const horaActualDecimal = ahora.getHours() + (ahora.getMinutes() / 60);
         if (decimalInicio < horaActualDecimal) {
             alert('No se pueden hacer reservas para horas pasadas del día actual.');
@@ -337,40 +386,58 @@ formReserva.addEventListener('submit', (e) => {
         }
     }
 
-    const reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
-    reservas.push(nuevaReserva);
-    localStorage.setItem('misReservas', JSON.stringify(reservas));
-
-    modal.style.display = 'none';
-    renderizarEcosistema();
-
+    let reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
     const selectSalas = document.getElementById('sala-select');
     const nombreSalaVisual = selectSalas.options[selectSalas.selectedIndex].text;
+
+    if (reservaActivaId) {
+        // ACTUALIZAR reserva existente
+        const index = reservas.findIndex(r => r.id_reserva === reservaActivaId);
+        if (index !== -1) {
+            reservas[index] = {
+                id_reserva: reservaActivaId, 
+                id_sala, fecha, hora_inicio, hora_fin, motivo
+            };
+            toastText.innerText = `Reserva en ${nombreSalaVisual} actualizada correctamente.`;
+        }
+    } else {
+        // CREAR nueva reserva
+        const nuevaReserva = {
+            id_reserva: Date.now(), 
+            id_sala, fecha, hora_inicio, hora_fin, motivo
+        };
+        reservas.push(nuevaReserva);
+        toastText.innerText = `Reserva confirmada en ${nombreSalaVisual} a las ${hora_inicio} hrs.`;
+    }
+
+    // Guardamos y actualizamos la interfaz
+    localStorage.setItem('misReservas', JSON.stringify(reservas));
+    modal.style.display = 'none';
+    renderizarEcosistema();
     
-    toastText.innerText = `Reserva confirmada en ${nombreSalaVisual} a las ${nuevaReserva.hora_inicio} hrs.`;
     toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); }, 4000);
 
     formReserva.reset(); 
 });
 
-// 6. ELIMINAR RESERVAS
-window.eliminarReserva = function(idReserva, event) {
-    event.stopPropagation(); 
-    
-    if (confirm('¿Estás seguro de que deseas eliminar esta reserva?')) {
-        let reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
-        reservas = reservas.filter(r => r.id_reserva !== idReserva);
-        localStorage.setItem('misReservas', JSON.stringify(reservas));
-        
-        renderizarEcosistema();
-        
-        toastText.innerText = `Reserva eliminada correctamente.`;
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 4000);
-    }
-};
-
+// 6. ELIMINAR RESERVAS (Conectado al botón delete-btn)
+if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+        if (reservaActivaId && confirm('¿Estás seguro de que deseas eliminar esta reserva?')) {
+            let reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
+            reservas = reservas.filter(r => r.id_reserva !== reservaActivaId);
+            localStorage.setItem('misReservas', JSON.stringify(reservas));
+            
+            modal.style.display = 'none';
+            renderizarEcosistema();
+            
+            toastText.innerText = `Reserva eliminada correctamente.`;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
+        }
+    });
+}
 // 7. UTILIDADES EXTRA
 document.getElementById('btn-logout').addEventListener('click', () => {
     localStorage.removeItem('usuarioActivo');
