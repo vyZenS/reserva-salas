@@ -1,4 +1,4 @@
-# 🚀 Sistema de Reserva de Salas - Dashboard Interactivo
+# Sistema de Reserva de Salas - Dashboard Interactivo
 
 Este proyecto es una aplicación web interactiva desarrollada para la gestión y reserva de salas de estudio en la Universidad de Talca.
 
@@ -19,7 +19,7 @@ Sistema diseñado para gestionar la disponibilidad de espacios, permitiendo a lo
     *   Diseño **Responsive** (Adaptado para móviles y escritorio).
     *   Feedback al usuario mediante sistema de notificaciones (*Toasts*).
 
-## 🛠 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 *   **HTML5:** Estructura semántica.
 *   **CSS:** Uso de variables CSS, Grid/Flexbox, Media Queries y transiciones.
 *   **JavaScript (Vanilla):** Lógica de negocio, manipulación del DOM, cálculo de fechas nativo y gestión de estados.
