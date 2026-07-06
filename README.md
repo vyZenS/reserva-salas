@@ -35,3 +35,9 @@ Si deseas clonar el repositorio para inspeccionar el código o realizar contribu
 1. Clonar el repositorio:
    ```bash
    git clone [https://github.com/vyzens/reserva-salas.git](https://github.com/vyzens/reserva-salas.git)
+
+ Autores
+
+    Martin Castro
+
+    Vicente Durán
