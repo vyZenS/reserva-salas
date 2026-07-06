@@ -389,7 +389,7 @@ body.dark-mode {
     .calendar-nav { gap: 10px !important; margin-bottom: 15px !important; }
     .calendar-nav h2 { font-size: 1.2rem !important; min-width: auto !important; }
     
-    /* 7. Botones Mes/Semana/Día estilo "Segment Control" (iOS) */
+    /* 7. Botones Mes/Semana/Día */
     .view-selector {
         background-color: var(--border-color) !important;
         border-radius: 10px !important;
@@ -412,17 +412,17 @@ body.dark-mode {
         box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
     }
 
-    /* 8. EL FIX MÁGICO DEL CALENDARIO: Forzar scroll horizontal en vez de aplastar */
+    /* 8. Forzar scroll horizontal */
     #contenedor-vista-mes {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch;
         padding-bottom: 10px;
     }
     .calendar-weekdays, .calendar-grid {
-        min-width: 600px !important; /* Fuerza un ancho mínimo, el usuario hace swipe */
+        min-width: 600px !important; 
     }
     .calendar-day {
-        min-height: 90px !important; /* Altura decente para las cajas */
+        min-height: 90px !important;
         padding: 5px !important;
     }
     .day-number { font-size: 0.9rem !important; }
