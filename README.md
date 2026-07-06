@@ -1,43 +1,37 @@
-# Sistema de Reserva de Salas - Dashboard Interactivo
+# 🚀 Sistema de Reserva de Salas - Dashboard Interactivo
 
-Este proyecto es una aplicación web interactiva desarrollada para la gestión y reserva de salas de estudio. Permite a los usuarios visualizar la disponibilidad de espacios en distintas vistas (mensual, semanal y diaria), crear nuevas reservas y gestionar las existentes de manera dinámica.
+Este proyecto es una aplicación web interactiva desarrollada para la gestión y reserva de salas de estudio en la Universidad de Talca.
 
-Proyecto desarrollado para el módulo de Desarrollo de Aplicaciones Web I.
+### Acceso al Proyecto (Live Demo)
+Se puede probar la aplicación directamente en línea aquí: 
+👉 [https://vyzens.github.io/reserva-salas/](https://vyzens.github.io/reserva-salas/)
 
-## Tecnologías Utilizadas
+---
 
-El proyecto fue construido y refactorizado desde un proyecto anterior, cumpliendo con el requerimiento de no utilizar frameworks visuales ni soluciones prefabricadas:
-
-*   **HTML5:** Estructura semántica.
-*   **CSS:** Sistema de diseño modular, uso de variables CSS (`:root`) para theming (Modo Claro/Oscuro) y diseño adaptativo (Grid y Flexbox).
-*   **JavaScript (Vanilla):** Manipulación dinámica del DOM, gestión de eventos y almacenamiento persistente simulado.
-*   **LocalStorage:** Almacenamiento local de datos del usuario y registro de reservas activas en el navegador.
+## Acerca del Proyecto
+Sistema diseñado para gestionar la disponibilidad de espacios, permitiendo a los usuarios visualizar reservas en vistas mensuales, semanales y diarias. El desarrollo se enfoca en una arquitectura **Client-Side (Vanilla)**, cumpliendo con los estándares de desarrollo web moderno sin depender de frameworks externos.
 
 ## Funcionalidades Principales
+*   **Vistas Dinámicas:** Calendario con navegación fluida entre Mes/Semana/Día.
+*   **Gestión de Reservas (CRUD):** Creación, edición y eliminación de eventos con validación de horarios y reglas de negocio en tiempo real.
+*   **UI/UX Premium:**
+    *   Soporte nativo para **Modo Oscuro/Claro**.
+    *   Diseño **Responsive** (Adaptado para móviles y escritorio).
+    *   Feedback al usuario mediante sistema de notificaciones (*Toasts*).
 
-1.  **Vistas Dinámicas del Calendario:** Alternancia entre vista mensual, semanal y detalle diario, calculando automáticamente los días y meses en base al reloj del sistema.
-2.  **Gestión de Reservas (CRUD):** 
-    *   Creación de reservas con validación de horarios y reglas de negocio (ej. máximo 4 horas de reserva, validación de horas pasadas).
-    *   Visualización de detalles en tarjetas interactivas.
-    *   Modificación y eliminación de reservas existentes.
-3.  **UI/UX y Accesibilidad:**
-    *   Modo Oscuro/Claro integrado nativamente.
-    *   Sistema de notificaciones (*Toasts*) no intrusivas para confirmar acciones del usuario.
-    *   Diseño responsive para adaptación a dispositivos móviles.
+## 🛠 Tecnologías Utilizadas
+*   **HTML5:** Estructura semántica.
+*   **CSS:** Uso de variables CSS, Grid/Flexbox, Media Queries y transiciones.
+*   **JavaScript (Vanilla):** Lógica de negocio, manipulación del DOM, cálculo de fechas nativo y gestión de estados.
+*   **LocalStorage:** Persistencia de datos local en el navegador del usuario.
 
 ## Instrucciones de Ejecución
 
-Dado que es una aplicación web *Client-Side* pura (Vanilla CSS/JS), no requiere instalación de dependencias ni levantar un servidor local para su ejecución básica.
+### Opción 1: Acceso Web
+Simplemente visita el enlace de [GitHub Pages](https://vyzens.github.io/reserva-salas/) en tu navegador.
 
-1. Clonar el repositorio en tu máquina local:
+### Opción 2: Desarrollo Local
+Si deseas clonar el repositorio para inspeccionar el código o realizar contribuciones:
+1. Clonar el repositorio:
    ```bash
-   git clone [URL_DE_TU_REPOSITORIO]
-
-2. Abrir el archivo `index.html` (para la vista de login) o `dashboard.html` (para la vista del dashboard inicial) directamente en cualquier navegador.
-
-**Nota:** Para una mejor experiencia probando el almacenamiento de sesión, se recomienda iniciar desde `index.html`
-
-## Autores / Integrantes del grupo
-- Martin Castro
-- Vicente Durán
-
+   git clone [https://github.com/vyzens/reserva-salas.git](https://github.com/vyzens/reserva-salas.git)
