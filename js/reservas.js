@@ -8,18 +8,15 @@ const salas = [
     { id_sala: 6, nombre: "Arrayán 3", ubicacion: "Salas Arrayán" }
 ];
 
-// Variables de estado global para controlar los meses
+// Variables de estado global
 let vistaActual = 'mes';
-
-// Variables para controlar la fecha actual y la vista
 let fechaActual = new Date();
 let mesActual = fechaActual.getMonth() + 1; 
 let anoActual = fechaActual.getFullYear();
+let diaSeleccionado = 1; 
+let fechaReferenciaSemana = new Date();
 
 const nombreMeses = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-let diaInicioSemana = 1; 
-let diaSeleccionado = 1; 
 
 // 2. INICIALIZACIÓN 
 document.addEventListener('DOMContentLoaded', () => {
@@ -96,15 +93,25 @@ function renderizarEcosistema() {
     const reservas = JSON.parse(localStorage.getItem('misReservas')) || [];
     const tituloCalendario = document.getElementById('mes-actual');
     
+    // Extraemos los datos para el título directamente de la fecha referencia
+    const mesNombre = nombreMeses[fechaReferenciaSemana.getMonth() + 1];
+    const anio = fechaReferenciaSemana.getFullYear();
+
     if (vistaActual === 'mes') {
-        tituloCalendario.innerText = `${nombreMeses[mesActual]} ${anoActual}`;
-        renderizarMes(reservas);
+        tituloCalendario.innerText = `${mesNombre} ${anio}`;
+        renderizarMes(reservas, fechaReferenciaSemana); // Pasamos la fecha
     } else if (vistaActual === 'semana') {
-        tituloCalendario.innerText = `Semana del ${diaInicioSemana} de ${nombreMeses[mesActual]} ${anoActual}`;
-        renderizarSemana(reservas);
+        // Cálculo del Lunes para el título
+        const temp = new Date(fechaReferenciaSemana);
+        const day = temp.getDay();
+        const diff = (day === 0 ? -6 : 1 - day);
+        temp.setDate(temp.getDate() + diff);
+        tituloCalendario.innerText = `Semana del ${temp.getDate()} de ${nombreMeses[temp.getMonth() + 1]}`;
+        
+        renderizarSemana(reservas, fechaReferenciaSemana); // Pasamos la fecha
     } else if (vistaActual === 'dia') {
-        tituloCalendario.innerText = `${diaSeleccionado} de ${nombreMeses[mesActual]} ${anoActual}`;
-        renderizarDia(reservas);
+        tituloCalendario.innerText = `${fechaReferenciaSemana.getDate()} de ${mesNombre} ${anio}`;
+        renderizarDia(reservas, fechaReferenciaSemana); // Pasamos la fecha
     }
 }
 
@@ -113,19 +120,23 @@ function renderizarMes(reservas) {
     const grid = document.getElementById('calendario-grid');
     grid.innerHTML = ''; 
 
+    // Usamos SIEMPRE fechaReferenciaSemana para obtener el mes y año
+    const mes = fechaReferenciaSemana.getMonth(); 
+    const ano = fechaReferenciaSemana.getFullYear();
+    const mesStr = (mes + 1).toString().padStart(2, '0');
+
     const hoy = new Date();
     const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
-    const mesStr = mesActual.toString().padStart(2, '0');
 
     // 1. Cálculos de Calendario Real
-    const diasDelMes = obtenerDiasDelMes(anoActual, mesActual);
+    const diasDelMes = new Date(ano, mes + 1, 0).getDate();
     
     // Obtenemos en qué día de la semana cae el día 1 
-    let primerDiaSemana = new Date(anoActual, mesActual - 1, 1).getDay();
+    let primerDiaSemana = new Date(ano, mes, 1).getDay();
     // Ajustamos para que Lunes sea 0 y Domingo sea 6
     primerDiaSemana = primerDiaSemana === 0 ? 6 : primerDiaSemana - 1;
 
-    // 2. Dibujar las cajas vacías para alinear el día 1 donde corresponde
+    // 2. Dibujar las cajas vacías
     for (let i = 0; i < primerDiaSemana; i++) {
         const divVacio = document.createElement('div');
         divVacio.style.border = 'none';
@@ -134,13 +145,13 @@ function renderizarMes(reservas) {
         grid.appendChild(divVacio);
     }
 
-    // 3. Dibujar los días reales del mes
+    // 3. Dibujar los días reales
     for (let dia = 1; dia <= diasDelMes; dia++) {
         const divDia = document.createElement('div');
         divDia.className = 'calendar-day';
         
         const diaTexto = dia.toString().padStart(2, '0');
-        const fechaComprobar = `${anoActual}-${mesStr}-${diaTexto}`;
+        const fechaComprobar = `${ano}-${mesStr}-${diaTexto}`;
         
         if (fechaComprobar === hoyStr) {
             divDia.classList.add('today');
@@ -175,22 +186,26 @@ function renderizarSemana(reservas) {
     thead.innerHTML = '<th style="width: 80px;">Hora</th>';
     const diasNombres = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
     
-    const hoy = new Date();
-    const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
-    const mesStr = mesActual.toString().padStart(2, '0');
-    
-    const diasDelMes = obtenerDiasDelMes(anoActual, mesActual);
+    // Cálculo preciso del Lunes de la semana actual
+    let tempDate = new Date(fechaReferenciaSemana);
+    let day = tempDate.getDay(); 
+    let diff = (day === 0 ? -6 : 1 - day); 
+    let lunesSemana = new Date(tempDate);
+    lunesSemana.setDate(tempDate.getDate() + diff);
 
+    const fechasDeEstaSemana = [];
+
+    // 1. Dibujar Cabecera
     for (let i = 0; i < 7; i++) {
-        let diaActual = diaInicioSemana + i;
-        if (diaActual > diasDelMes) break; 
+        let fechaCol = new Date(lunesSemana);
+        fechaCol.setDate(lunesSemana.getDate() + i);
+        fechasDeEstaSemana.push(fechaCol);
         
-        const fechaColumna = `${anoActual}-${mesStr}-${diaActual.toString().padStart(2, '0')}`;
-        const esHoy = fechaColumna === hoyStr ? 'color: var(--primary-color); font-weight: 800; border-bottom: 2px solid var(--primary-color);' : '';
-        
-        thead.innerHTML += `<th style="${esHoy}">${diasNombres[i]} ${diaActual.toString().padStart(2, '0')}</th>`;
+        const diaStr = fechaCol.getDate().toString().padStart(2, '0');
+        thead.innerHTML += `<th style="border: 1px solid var(--border-color);">${diasNombres[i]} ${diaStr}</th>`;
     }
 
+    // 2. Dibujar Grilla
     tbody.innerHTML = '';
     let skipCells = [0, 0, 0, 0, 0, 0, 0];
 
@@ -204,13 +219,9 @@ function renderizarSemana(reservas) {
                 continue;
             }
 
-            let diaActual = diaInicioSemana + i;
-            if (diaActual > diasDelMes) {
-                tr.innerHTML += `<td style="background-color: rgba(0,0,0,0.05); border: 1px solid var(--border-color);"></td>`;
-                continue;
-            }
+            const fechaCol = fechasDeEstaSemana[i];
+            const fechaStr = `${fechaCol.getFullYear()}-${(fechaCol.getMonth() + 1).toString().padStart(2, '0')}-${fechaCol.getDate().toString().padStart(2, '0')}`;
 
-            const fechaStr = `${anoActual}-${mesStr}-${diaActual.toString().padStart(2, '0')}`;
             const reserva = reservas.find(r => r.fecha === fechaStr && parseInt(r.hora_inicio.split(':')[0]) === h);
 
             if (reserva) {
@@ -222,12 +233,12 @@ function renderizarSemana(reservas) {
                 skipCells[i] = duracion - 1; 
 
                 tr.innerHTML += `
-                    <td rowspan="${duracion}" onclick="abrirDetalleReserva(${reserva.id_reserva}, event)" class="color-${reserva.id_sala}" style="cursor: pointer; border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; box-shadow: inset 4px 0 0 rgba(0,0,0,0.2); vertical-align: top;">
-                        <strong style="display: block; margin-bottom: 4px;">${sala ? sala.nombre : 'Reservado'}</strong>${reserva.motivo}
+                    <td rowspan="${duracion}" onclick="abrirDetalleReserva(${reserva.id_reserva}, event)" class="color-${reserva.id_sala}" style="cursor: pointer; border: 1px solid var(--border-color); color: var(--text-color-primary); padding: 5px; font-size: 0.8rem; vertical-align: top;">
+                        <strong style="display: block;">${sala ? sala.nombre : 'Reservado'}</strong>
                     </td>
                 `;
             } else {
-                tr.innerHTML += `<td onclick="abrirModalReserva('${fechaStr}')" style="cursor: pointer; border: 1px solid var(--border-color); transition: background 0.2s;"></td>`;
+                tr.innerHTML += `<td onclick="abrirModalReserva('${fechaStr}')" style="cursor: pointer; border: 1px solid var(--border-color);"></td>`;
             }
         }
         tbody.appendChild(tr);
@@ -243,8 +254,12 @@ function renderizarDia(reservas) {
     salas.forEach(s => cabecera.innerHTML += `<th style="border: 1px solid var(--border-color);">${s.nombre}</th>`);
 
     tbody.innerHTML = '';
-    const mesStr = mesActual.toString().padStart(2, '0');
-    const fechaFijaDia = `${anoActual}-${mesStr}-${diaSeleccionado.toString().padStart(2, '0')}`;
+
+    // Extraemos fecha directamente de la variable global de referencia
+    const mesStr = (fechaReferenciaSemana.getMonth() + 1).toString().padStart(2, '0');
+    const diaStr = fechaReferenciaSemana.getDate().toString().padStart(2, '0');
+    const fechaFijaDia = `${fechaReferenciaSemana.getFullYear()}-${mesStr}-${diaStr}`;
+    
     let skipCells = Array(salas.length).fill(0); 
 
     for (let h = 7; h <= 20; h++) {
@@ -293,13 +308,13 @@ const cancelBtn = document.getElementById('cancel-btn');
 
 let reservaActivaId = null;
 
-// Para CREAR una reserva nueva
+// Para crear una reserva nueva
 function abrirModalReserva(fecha) {
     reservaActivaId = null;
     formReserva.reset();
     inputFecha.value = fecha; 
 
-    // MODO CREACIÓN: Mostramos Guardar, ocultamos Eliminar
+    // Mostramos Guardar, ocultamos Eliminar
     if (saveBtn) {
         saveBtn.style.display = 'inline-block';
         saveBtn.innerText = 'Guardar';
@@ -326,7 +341,7 @@ window.abrirDetalleReserva = function(idReserva, event) {
         document.getElementById('hora-fin').value = reserva.hora_fin;
         document.getElementById('motivo').value = reserva.motivo;
 
-        // MODO EDICIÓN: Mostramos Guardar (como Actualizar) y mostramos Eliminar
+        // Mostramos Guardar (como Actualizar) y mostramos Eliminar
         if (saveBtn) {
             saveBtn.style.display = 'inline-block';
             saveBtn.innerText = 'Actualizar';
@@ -337,7 +352,7 @@ window.abrirDetalleReserva = function(idReserva, event) {
     }
 };
 
-// Evento para CERRAR el modal (Global, para que no se dupliquen listeners)
+// Evento para cerrar el modal (Global, para que no se dupliquen listeners)
 if (cancelBtn) {
     cancelBtn.addEventListener('click', () => {
         modal.style.display = 'none';
@@ -421,7 +436,7 @@ formReserva.addEventListener('submit', (e) => {
     formReserva.reset(); 
 });
 
-// 6. ELIMINAR RESERVAS (Conectado al botón delete-btn)
+// 6. ELIMINAR RESERVAS
 if (deleteBtn) {
     deleteBtn.addEventListener('click', () => {
         if (reservaActivaId && confirm('¿Estás seguro de que deseas eliminar esta reserva?')) {
@@ -455,43 +470,22 @@ document.getElementById('theme-toggle').addEventListener('change', (e) => {
 // 8. NAVEGACIÓN INTELIGENTE (MES, SEMANA, DÍA)
 document.getElementById('btn-anterior').addEventListener('click', () => {
     if (vistaActual === 'semana') {
-        diaInicioSemana -= 7;
-        if(diaInicioSemana < 1) diaInicioSemana = 1;
+        fechaReferenciaSemana.setDate(fechaReferenciaSemana.getDate() - 7);
     } else if (vistaActual === 'dia') {
-        diaSeleccionado--;
-        if(diaSeleccionado < 1) diaSeleccionado = 1;
+        fechaReferenciaSemana.setDate(fechaReferenciaSemana.getDate() - 1);
     } else if (vistaActual === 'mes') {
-        mesActual--;
-        if (mesActual < 1) {
-            mesActual = 12;
-            anoActual--;
-        }
-        // Ajustamos la semana y el día al retroceder de mes
-        const diasDelMesNuevo = obtenerDiasDelMes(anoActual, mesActual);
-        if (diaInicioSemana > diasDelMesNuevo) diaInicioSemana = diasDelMesNuevo - 6;
-        if (diaSeleccionado > diasDelMesNuevo) diaSeleccionado = diasDelMesNuevo;
+        fechaReferenciaSemana.setMonth(fechaReferenciaSemana.getMonth() - 1);
     }
     renderizarEcosistema();
 });
 
 document.getElementById('btn-siguiente').addEventListener('click', () => {
-    const diasDelMes = obtenerDiasDelMes(anoActual, mesActual);
-    
     if (vistaActual === 'semana') {
-        diaInicioSemana += 7;
-        if(diaInicioSemana > diasDelMes) diaInicioSemana = diasDelMes; 
+        fechaReferenciaSemana.setDate(fechaReferenciaSemana.getDate() + 7);
     } else if (vistaActual === 'dia') {
-        diaSeleccionado++;
-        if(diaSeleccionado > diasDelMes) diaSeleccionado = diasDelMes;
+        fechaReferenciaSemana.setDate(fechaReferenciaSemana.getDate() + 1);
     } else if (vistaActual === 'mes') {
-        mesActual++;
-        if (mesActual > 12) {
-            mesActual = 1;
-            anoActual++;
-        }
-        const diasDelMesNuevo = obtenerDiasDelMes(anoActual, mesActual);
-        if (diaInicioSemana > diasDelMesNuevo) diaInicioSemana = diasDelMesNuevo - 6;
-        if (diaSeleccionado > diasDelMesNuevo) diaSeleccionado = diasDelMesNuevo;
+        fechaReferenciaSemana.setMonth(fechaReferenciaSemana.getMonth() + 1);
     }
     renderizarEcosistema();
 });
