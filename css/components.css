@@ -1,15 +1,15 @@
 /* 1. VARIABLES GLOBALES & TEMA */
 :root {
-    /* Color principal: Verde Esmeralda vibrante pero profesional */
+    /* Color principal: Verde Esmeralda vibrante */
     --primary-color: #10b981; 
     
-    /* Fondos: Blanco puro y un gris extremadamente claro para contrastar */
+    /* Fondos: Blanco puro y un gris claro */
     --bg-color: #f8fafc; 
     --sidebar-bg: #ffffff;
     --main-content-bg: #ffffff;
     --card-bg-color: #ffffff;
     
-    /* Textos: Gris carbón para no usar negro puro */
+    /* Textos: Gris carbón */
     --text-color-primary: #1e293b;
     --text-color-secondary: #64748b;
     
@@ -337,7 +337,7 @@ body.dark-mode {
         overflow: hidden !important; /* Evita que toda la página baile */
     }
 
-    /* 2. Sidebar Ultra-Compacto (Panel Superior) */
+    /* 2. Sidebar Compacto (Panel Superior) */
     .sidebar {
         width: 100% !important;
         min-width: 100% !important;
@@ -362,7 +362,7 @@ body.dark-mode {
         gap: 15px !important;
         padding-bottom: 5px !important;
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Firefox */
+        scrollbar-width: none;
     }
     #lista-salas-sidebar::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
     #lista-salas-sidebar li {
