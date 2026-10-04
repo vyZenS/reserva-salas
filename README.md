@@ -14,7 +14,7 @@ Sistema diseñado para gestionar la disponibilidad de espacios, permitiendo a lo
 ## Funcionalidades Principales
 *   **Vistas Dinámicas:** Calendario con navegación fluida entre Mes/Semana/Día.
 *   **Gestión de Reservas (CRUD):** Creación, edición y eliminación de eventos con validación de horarios y reglas de negocio en tiempo real.
-*   **UI/UX Premium:**
+*   **UI/UX Detallado:**
     *   Soporte nativo para **Modo Oscuro/Claro**.
     *   Diseño **Responsive** (Adaptado para móviles y escritorio).
     *   Feedback al usuario mediante sistema de notificaciones (*Toasts*).
